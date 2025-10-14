@@ -1,6 +1,6 @@
-# Zeezy Pro - Scheduled Grocery Delivery Platform
+# RelaxShopping - Scheduled Grocery Delivery Platform
 
-Zeezy Pro is a production-ready full-stack web application for scheduled-round grocery delivery targeting estates and hotels in Nigeria. It features live store prices, batch order management, Paystack payment integration, and WhatsApp admin notifications.
+RelaxShopping is a production-ready full-stack web application for scheduled-round grocery delivery targeting estates and hotels in Nigeria. It features live store prices, batch order management, Paystack payment integration, and WhatsApp admin notifications.
 
 ## 🚀 Features
 
