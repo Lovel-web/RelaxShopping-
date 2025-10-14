@@ -1,4 +1,4 @@
-# Zeezy Pro - Quick Setup Guide for Non-Technical Users
+# RelaxShopping - Quick Setup Guide for Non-Technical Users
 
 This guide will help you set up and deploy Zeezy Pro step by step.
 
