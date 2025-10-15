@@ -23,10 +23,10 @@ export const Navbar = () => {
       <div className="container flex h-16 items-center justify-between">
         <Link to="/" className="flex items-center space-x-2">
   <img 
-    src="/placeholder.png" 
-    alt="RelaxShopping Logo" 
-    className="h-10 w-auto object-contain"
-  />
+  src="/placeholder.png" 
+  alt="RelaxShopping Logo" 
+  className="h-10 w-auto object-contain transition-transform duration-500 hover:scale-105 drop-shadow-[0_0_10px_rgba(0,255,200,0.5)]"
+/>
   <span className="text-xl font-bold text-gradient-primary">RelaxShopping</span>
 </Link>
 
