@@ -30,6 +30,9 @@ export const Navbar = () => {
   <span className="text-xl font-bold text-gradient-primary">RelaxShopping</span>
 </Link>
 
+        {user?.role === "vendor" && (
+  <a href="/vendor-dashboard" className="px-3 py-2">Vendor Dashboard</a>
+)}
         <div className="flex items-center gap-4">
           {user ? (
             <>
