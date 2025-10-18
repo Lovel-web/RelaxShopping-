@@ -26,7 +26,11 @@ export default function Auth() {
   const [state, setState] = useState('');
   const [lga, setLga] = useState('');
   const [estateOrHotel, setEstateOrHotel] = useState('');
-
+const [role, setRole] = useState<'customer' | 'vendor' | 'worker'>('customer');
+  const [storeName, setStoreName] = useState('');
+const [accountNumber, setAccountNumber] = useState('');
+const [deliveryFee, setDeliveryFee] = useState('');
+  
   // Redirect if already logged in
   useEffect(() => {
     if (user) {
@@ -94,14 +98,23 @@ export default function Auth() {
 
     setLoading(true);
 
-    const { error } = await signUp(email, password, {
-      fullName: fullName.trim(),
-      phone,
-      state,
-      lga,
-      estateOrHotel: estateOrHotel.trim(),
-      role: 'customer'
-    });
+    const userData: any = {
+  fullName: fullName.trim(),
+  phone,
+  state,
+  lga,
+  estateOrHotel: estateOrHotel.trim(),
+  role,
+  createdAt: new Date(),
+};
+
+if (role === 'vendor') {
+  userData.storeName = storeName.trim();
+  userData.accountNumber = accountNumber.trim();
+  userData.deliveryFee = deliveryFee || 400; // default ₦400
+}
+
+const { error } = await signUp(email, password, userData);
 
     if (error) {
       if (error.code === 'auth/email-already-in-use') {
@@ -167,7 +180,59 @@ export default function Auth() {
                 required
               />
             </div>
+            
+            <div className="space-y-2">
+  <Label htmlFor="role">Account Type *</Label>
+  <Select value={role} onValueChange={setRole}>
+    <SelectTrigger>
+      <SelectValue placeholder="Select account type" />
+    </SelectTrigger>
+    <SelectContent>
+      <SelectItem value="customer">Customer</SelectItem>
+      <SelectItem value="vendor">Vendor / Store Owner</SelectItem>
+      <SelectItem value="worker">Worker / Staff</SelectItem>
+    </SelectContent>
+  </Select>
+</div>
 
+            {role === 'vendor' && (
+  <>
+    <div className="space-y-2">
+      <Label htmlFor="storeName">Store Name *</Label>
+      <Input
+        id="storeName"
+        value={storeName}
+        onChange={(e) => setStoreName(e.target.value)}
+        placeholder="e.g., MarketPro Groceries"
+        required
+      />
+    </div>
+
+    <div className="space-y-2">
+      <Label htmlFor="accountNumber">Account Number *</Label>
+      <Input
+        id="accountNumber"
+        value={accountNumber}
+        onChange={(e) => setAccountNumber(e.target.value)}
+        placeholder="e.g., 0123456789"
+        required
+      />
+    </div>
+
+    <div className="space-y-2">
+      <Label htmlFor="deliveryFee">Delivery Fee (₦)</Label>
+      <Input
+        id="deliveryFee"
+        type="number"
+        value={deliveryFee}
+        onChange={(e) => setDeliveryFee(e.target.value)}
+        placeholder="Default: 400"
+      />
+      <p className="text-xs text-muted-foreground">Leave empty to use standard ₦400 fee</p>
+    </div>
+  </>
+)}
+            
             <div className="space-y-2">
               <Label htmlFor="password">Password</Label>
               <Input
