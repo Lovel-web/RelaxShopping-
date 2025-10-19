@@ -274,6 +274,19 @@ const { error } = await signUp(email, password, userData);
         {mode === 'signup' && (
           <form onSubmit={handleSignup} className="space-y-4">
             <div className="space-y-2">
+  <Label htmlFor="role">Account Type *</Label>
+  <Select value={role} onValueChange={setRole}>
+    <SelectTrigger>
+      <SelectValue placeholder="Select account type" />
+    </SelectTrigger>
+    <SelectContent>
+      <SelectItem value="customer">Customer</SelectItem>
+      <SelectItem value="vendor">Vendor / Store Owner</SelectItem>
+      <SelectItem value="worker">Worker / Staff</SelectItem>
+    </SelectContent>
+  </Select>
+</div>
+            <div className="space-y-2">
               <Label htmlFor="fullName">Full Name *</Label>
               <Input
                 id="fullName"
@@ -347,6 +360,46 @@ const { error } = await signUp(email, password, userData);
                 required
               />
             </div>
+            {role === 'vendor' && (
+  <>
+    <div className="space-y-2">
+      <Label htmlFor="storeName">Store Name *</Label>
+      <Input
+        id="storeName"
+        value={storeName}
+        onChange={(e) => setStoreName(e.target.value)}
+        placeholder="e.g., Bola Supermart"
+        required
+      />
+    </div>
+
+    <div className="space-y-2">
+      <Label htmlFor="accountNumber">Account Number *</Label>
+      <Input
+        id="accountNumber"
+        value={accountNumber}
+        onChange={(e) => setAccountNumber(e.target.value)}
+        placeholder="e.g., 0123456789"
+        required
+      />
+      <p className="text-xs text-muted-foreground">
+        Visible only to admin and workers for transparency.
+      </p>
+    </div>
+
+    <div className="space-y-2">
+      <Label htmlFor="deliveryFee">Delivery Fee (₦)</Label>
+      <Input
+        id="deliveryFee"
+        type="number"
+        value={deliveryFee}
+        onChange={(e) => setDeliveryFee(e.target.value)}
+        placeholder="Default: 400"
+      />
+      <p className="text-xs text-muted-foreground">Leave empty to use standard ₦400 fee.</p>
+    </div>
+  </>
+)}
 
             <div className="space-y-2">
               <Label htmlFor="password">Password *</Label>
