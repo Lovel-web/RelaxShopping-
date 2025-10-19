@@ -146,7 +146,7 @@ export default function Auth() {
           <div className="flex items-center justify-center w-16 h-16 rounded-2xl bg-gradient-to-br from-primary to-primary-light mb-4">
             <Store className="h-8 w-8 text-primary-foreground" />
           </div>
-          <h1 className="text-3xl font-bold text-gradient-primary">Zeezy Pro</h1>
+          <h1 className="text-3xl font-bold text-gradient-primary">RelaxShopping</h1>
           <p className="text-muted-foreground text-center mt-2">
             {mode === 'login' && 'Welcome back! Sign in to continue'}
             {mode === 'signup' && 'Create your account to get started'}
