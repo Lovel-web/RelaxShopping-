@@ -9,6 +9,10 @@ import Index from "./pages/Index";
 import Auth from "./pages/Auth";
 import Shops from "./pages/Shops";
 import NotFound from "./pages/NotFound";
+import VendorDashboard from "@/pages/VendorDashboard";
+import AdminDashboard from "@/pages/AdminDashboard";
+import WorkerDashboard from "@/pages/WorkerDashboard";
+import ChatPanel from "@/pages/ChatPanel";
 
 const queryClient = new QueryClient();
 
@@ -26,6 +30,10 @@ const App = () => (
               <Route path="/shops" element={<Shops />} />
               {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
               <Route path="*" element={<NotFound />} />
+              <Route path="/vendor" element={<VendorDashboard />} />
+<Route path="/admin" element={<AdminDashboard />} />
+<Route path="/worker" element={<WorkerDashboard />} />
+<Route path="/chat/:orderId" element={<ChatPanel />} />
             </Routes>
           </BrowserRouter>
         </CartProvider>
