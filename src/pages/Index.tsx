@@ -22,7 +22,7 @@ export default function Index() {
           </h1>
           
           <p className="text-xl text-muted-foreground mb-8 max-w-2xl mx-auto">
-            Zeezy Pro brings live store prices and scheduled batch delivery to estates and hotels across Nigeria. 
+            RelaxShopping brings live store prices and scheduled batch delivery to estates and hotels across Nigeria. 
             Save time, get the best prices, and never miss a delivery window.
           </p>
 
@@ -153,7 +153,7 @@ export default function Index() {
             Ready to Save Time and Money?
           </h2>
           <p className="text-xl text-muted-foreground mb-8 max-w-2xl mx-auto">
-            Join estates and hotels across Nigeria who trust Zeezy Pro for their grocery needs
+            Join estates and hotels across Nigeria who trust RelaxShopping for their grocery needs
           </p>
           <Link to="/auth?mode=signup">
             <Button variant="hero" size="lg">
@@ -170,10 +170,10 @@ export default function Index() {
           <div className="flex flex-col md:flex-row justify-between items-center gap-4">
             <div className="flex items-center gap-2">
               <Store className="w-6 h-6 text-primary" />
-              <span className="font-bold text-gradient-primary">Zeezy Pro</span>
+              <span className="font-bold text-gradient-primary">RelaxShopping</span>
             </div>
             <p className="text-sm text-muted-foreground">
-              © 2025 Zeezy Pro. Serving estates and hotels across Nigeria.
+              © 2025 RelaxShopping. Serving estates and hotels across Nigeria.
             </p>
           </div>
         </div>
