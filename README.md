@@ -6,7 +6,7 @@ RelaxShopping is a production-ready full-stack web application for scheduled-rou
 
 - **🔐 Firebase Authentication** - Email/password signup with Nigerian phone validation
 - **🛒 Live Store Pricing** - Real-time prices from Chowdeck, Shoprite, and partner stores
-- **⏰ Scheduled Batch Deliveries** - 5 daily time slots (8AM, 10AM, 12PM, 3PM, 5PM)
+- **⏰ Scheduled Batch Deliveries** - 3 daily time slots (10AM, 1PM, 4PM)
 - **💳 Paystack Integration** - Secure payment processing with transaction verification
 - **📱 WhatsApp Notifications** - Admin alerts for batch readiness and order updates
 - **📊 Admin Dashboard** - Order management, batch tracking, and delivery coordination
