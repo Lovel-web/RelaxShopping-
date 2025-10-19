@@ -51,6 +51,35 @@ export default function VendorDashboard() {
           <Label>Image URL</Label>
           <Input value={imageUrl} onChange={(e) => setImageUrl(e.target.value)} placeholder="https://..." />
         </div>
+        const handleCSVUpload = async (e) => {
+  const file = e.target.files[0];
+  if (!file) return;
+
+  const reader = new FileReader();
+  reader.onload = async (event) => {
+    const text = event.target.result;
+    const lines = text.split('\n').slice(1); // skip header
+    try {
+      for (const line of lines) {
+        const [name, price, image] = line.split(',');
+        if (!name || !price) continue;
+        await addDoc(collection(db, 'products'), {
+          name: name.trim(),
+          price: parseFloat(price),
+          image: image?.trim() || '',
+          vendorId: user.uid,
+          lga: user.lga,
+          createdAt: new Date(),
+        });
+      }
+      toast.success('Products uploaded successfully!');
+    } catch (err) {
+      toast.error('Error uploading products.');
+      console.error(err);
+    }
+  };
+  reader.readAsText(file);
+};
         <Button type="submit">Add Product</Button>
 
 <div className="mt-6 border-t pt-4">
