@@ -1,17 +1,8 @@
-# Netlify configuration for RelaxShopping (Vite + React)
-
 [build]
   command = "npm run build"
   publish = "dist"
 
-# Ensures single-page app routing works (important for React)
 [[redirects]]
   from = "/*"
   to = "/index.html"
   status = 200
-
-# Optional performance headers
-[[headers]]
-  for = "/*"
-  [headers.values]
-    Cache-Control = "public, max-age=31536000"
