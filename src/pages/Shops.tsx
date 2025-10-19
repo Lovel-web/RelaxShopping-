@@ -7,6 +7,9 @@ import { Store, ExternalLink } from 'lucide-react';
 import { Shop } from '@/types';
 import { collection, getDocs } from 'firebase/firestore';
 import { db } from '@/lib/firebase';
+import { query, collection, where, getDocs } from "firebase/firestore";
+import { useAuth } from "@/contexts/AuthContext";
+import { db } from "@/lib/firebase";
 
 export default function Shops() {
   const [shops, setShops] = useState<Shop[]>([]);
@@ -16,24 +19,32 @@ export default function Shops() {
     fetchShops();
   }, []);
 
-  const fetchShops = async () => {
-    try {
-      const shopsCollection = collection(db, 'shops');
-      const snapshot = await getDocs(shopsCollection);
-      const shopsData = snapshot.docs.map(doc => ({
-        id: doc.id,
-        ...doc.data(),
-        lastSyncedAt: doc.data().lastSyncedAt?.toDate()
-      })) as Shop[];
-      
-      setShops(shopsData.filter(shop => shop.isActive));
-    } catch (error) {
-      console.error('Error fetching shops:', error);
-    } finally {
-      setLoading(false);
-    }
-  };
+  const { user } = useAuth(); // get logged in user
 
+const fetchShops = async () => {
+  try {
+    if (!user?.lga) return; // wait until user is loaded
+
+    // Fetch shops only in the same LGA as the user
+    const shopsQuery = query(
+      collection(db, 'shops'),
+      where('lga', '==', user.lga)
+    );
+
+    const snapshot = await getDocs(shopsQuery);
+    const shopsData = snapshot.docs.map(doc => ({
+      id: doc.id,
+      ...doc.data(),
+      lastSyncedAt: doc.data().lastSyncedAt?.toDate()
+    })) as Shop[];
+
+    setShops(shopsData.filter(shop => shop.isActive));
+  } catch (error) {
+    console.error('Error fetching shops:', error);
+  } finally {
+    setLoading(false);
+  }
+};
   return (
     <div className="min-h-screen bg-background">
       <Navbar />
