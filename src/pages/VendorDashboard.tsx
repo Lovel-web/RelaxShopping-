@@ -52,6 +52,19 @@ export default function VendorDashboard() {
           <Input value={imageUrl} onChange={(e) => setImageUrl(e.target.value)} placeholder="https://..." />
         </div>
         <Button type="submit">Add Product</Button>
+
+<div className="mt-6 border-t pt-4">
+  <h2 className="text-lg font-semibold mb-2">Bulk Upload (CSV / POS File)</h2>
+  <input
+    type="file"
+    accept=".csv"
+    onChange={handleCSVUpload}
+    className="block w-full text-sm text-muted-foreground border border-dashed p-2 rounded-md"
+  />
+  <p className="text-xs mt-1 text-muted-foreground">
+    Upload a CSV with columns: name, price, image
+  </p>
+</div>
       </form>
     </div>
   );
