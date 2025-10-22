@@ -218,4 +218,4 @@ Contact Chowdeck or Shoprite for B2B API access. This will:
 
 ---
 
-**🎉 Congratulations!** Your Zeezy Pro platform is now live.
+**🎉 Congratulations!** Your RelaxShopping platform is now live.
