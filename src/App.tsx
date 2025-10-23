@@ -9,6 +9,7 @@ import { CartProvider } from "@/contexts/CartContext";
 import Index from "./pages/Index";
 import Auth from "./pages/Auth";
 import Shops from "./pages/Shops";
+import AdminPayments from "@/pages/AdminPayments";
 import NotFound from "./pages/NotFound";
 import Signup from "@/pages/Signup";
 import Checkout from "@/pages/Checkout";
@@ -29,6 +30,7 @@ const App = () => (
                <Route path="/" element={<Index />} />
                <Route path="/signup" element={<Signup />} />
               <Route path="/auth" element={<Auth />} />
+                <Route path="/admin/payments" element={<AdminPayments />} />
               <Route path="/shops" element={<Shops />} />
                 <Route path="/checkout" element={<Checkout />} />
                 <Route path="/admin" element={<AdminDashboard />} />
