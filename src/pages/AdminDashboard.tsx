@@ -1,5 +1,14 @@
+// src/pages/AdminDashboard.tsx
 import { useEffect, useState } from "react";
-import { collection, addDoc, onSnapshot, query, where, doc, deleteDoc } from "firebase/firestore";
+import {
+  collection,
+  addDoc,
+  onSnapshot,
+  query,
+  where,
+  doc,
+  deleteDoc,
+} from "firebase/firestore";
 import { auth, db } from "@/lib/firebase";
 import { onAuthStateChanged } from "firebase/auth";
 
@@ -15,11 +24,16 @@ export default function AdminDashboard() {
   useEffect(() => {
     const unsub = onAuthStateChanged(auth, async (currentUser) => {
       if (currentUser) {
-        const res = await fetch(`https://firestore.googleapis.com/v1/projects/${import.meta.env.VITE_FIREBASE_PROJECT_ID}/databases/(default)/documents/users/${currentUser.uid}`);
+        // Fetch user doc via REST to get role quickly (or use Firestore getDoc)
+        const res = await fetch(
+          `https://firestore.googleapis.com/v1/projects/${import.meta.env.VITE_FIREBASE_PROJECT_ID}/databases/(default)/documents/users/${currentUser.uid}`
+        );
         const data = await res.json();
         const role = data.fields?.role?.stringValue;
         if (role === "admin") setUser(currentUser);
-        else alert("Access Denied: You must be an admin to view this page.");
+        else {
+          alert("Access Denied: You must be an admin to view this page.");
+        }
       } else {
         alert("Please login first.");
       }
@@ -27,12 +41,12 @@ export default function AdminDashboard() {
     return () => unsub();
   }, []);
 
-  // Fetch LGAs for the admin’s state
+  // Fetch LGAs for the admin’s state (only LGAs that this admin created)
   useEffect(() => {
     if (!user) return;
     const q = query(collection(db, "lgas"), where("stateAdminId", "==", user.uid));
     const unsub = onSnapshot(q, (snapshot) => {
-      setLgas(snapshot.docs.map((doc) => ({ id: doc.id, ...doc.data() })));
+      setLgas(snapshot.docs.map((d) => ({ id: d.id, ...d.data() })));
     });
     return () => unsub();
   }, [user]);
@@ -42,7 +56,7 @@ export default function AdminDashboard() {
     if (!selectedLGA) return;
     const q = query(collection(db, "estates"), where("lgaId", "==", selectedLGA));
     const unsub = onSnapshot(q, (snapshot) => {
-      setEstates(snapshot.docs.map((doc) => ({ id: doc.id, ...doc.data() })));
+      setEstates(snapshot.docs.map((d) => ({ id: d.id, ...d.data() })));
     });
     return () => unsub();
   }, [selectedLGA]);
@@ -58,7 +72,8 @@ export default function AdminDashboard() {
   }
 
   async function addEstate() {
-    if (!estateName || !selectedLGA) return alert("Select LGA and enter Estate name");
+    if (!estateName || !selectedLGA)
+      return alert("Select LGA and enter Estate name");
     await addDoc(collection(db, "estates"), {
       name: estateName,
       lgaId: selectedLGA,
@@ -68,10 +83,13 @@ export default function AdminDashboard() {
   }
 
   async function deleteLGA(id: string) {
+    if (!confirm("Delete this LGA? This will not delete linked estates automatically.")) return;
     await deleteDoc(doc(db, "lgas", id));
+    // Optionally you may delete linked estates in code (not done here).
   }
 
   async function deleteEstate(id: string) {
+    if (!confirm("Delete this Estate/Hotel?")) return;
     await deleteDoc(doc(db, "estates", id));
   }
 
@@ -138,4 +156,4 @@ export default function AdminDashboard() {
       )}
     </div>
   );
-      }
+                 }
