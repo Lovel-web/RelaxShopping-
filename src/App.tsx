@@ -1,3 +1,4 @@
+import AdminDashboard from "@/pages/AdminDashboard";
 import { Toaster } from "@/components/ui/toaster";
 import { Toaster as Sonner } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
@@ -10,7 +11,6 @@ import Auth from "./pages/Auth";
 import Shops from "./pages/Shops";
 import NotFound from "./pages/NotFound";
 import Signup from "@/pages/Signup";
-import AdminDashboard from "@/pages/AdminDashboard";
 import Checkout from "@/pages/Checkout";
 
 const queryClient = new QueryClient();
