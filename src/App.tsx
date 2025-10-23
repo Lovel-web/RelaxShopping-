@@ -12,6 +12,7 @@ import Shops from "./pages/Shops";
 import AdminPayments from "@/pages/AdminPayments";
 import NotFound from "./pages/NotFound";
 import Signup from "@/pages/Signup";
+import StaffDashboard from "@/pages/StaffDashboard";
 import Checkout from "@/pages/Checkout";
 import OrderSuccess from "@/pages/OrderSuccess";
 
@@ -30,6 +31,7 @@ const App = () => (
               <Routes>
                <Route path="/" element={<Index />} />
                <Route path="/signup" element={<Signup />} />
+                <Route path="/staff-dashboard" element={<StaffDashboard />} />
               <Route path="/auth" element={<Auth />} />
                 <Route path="/order-success" element={<OrderSuccess />} />
                 <Route path="/admin/payments" element={<AdminPayments />} />
