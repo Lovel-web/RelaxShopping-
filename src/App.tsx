@@ -11,6 +11,7 @@ import Index from "./pages/Index";
 import Auth from "./pages/Auth";
 import Shops from "./pages/Shops";
 import AdminPayments from "@/pages/AdminPayments";
+import ChatPanel from "@/pages/ChatPanel";
 import NotFound from "./pages/NotFound";
 import Signup from "@/pages/Signup";
 import StaffDashboard from "@/pages/StaffDashboard";
@@ -35,6 +36,7 @@ const App = () => (
                 <Route path="/staff-dashboard" element={<StaffDashboard />} />
                 <Route path="/login" element={<Login />} />
               <Route path="/auth" element={<Auth />} />
+                <Route path="/chat" element={<ChatPanel />} />
                 <Route path="/order-success" element={<OrderSuccess />} />
                 <Route path="/admin/payments" element={<AdminPayments />} />
               <Route path="/shops" element={<Shops />} />
