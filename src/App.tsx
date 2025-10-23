@@ -1,4 +1,5 @@
 import AdminDashboard from "@/pages/AdminDashboard";
+import Login from "@/pages/Login";
 import { Toaster } from "@/components/ui/toaster";
 import { Toaster as Sonner } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
@@ -32,6 +33,7 @@ const App = () => (
                <Route path="/" element={<Index />} />
                <Route path="/signup" element={<Signup />} />
                 <Route path="/staff-dashboard" element={<StaffDashboard />} />
+                <Route path="/login" element={<Login />} />
               <Route path="/auth" element={<Auth />} />
                 <Route path="/order-success" element={<OrderSuccess />} />
                 <Route path="/admin/payments" element={<AdminPayments />} />
