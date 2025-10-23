@@ -48,10 +48,16 @@ export function formatNigerianPhone(phone: string): string {
   return phone;
 }
 
-export function generateOrderReference(): string {
-  const timestamp = Date.now().toString(36);
-  const random = Math.random().toString(36).substring(2, 8);
-  return `ZP-${timestamp}-${random}`.toUpperCase();
+export function generateOrderReference(estateOrHotel?: string): string {
+  // Use the first word of the estate/hotel, uppercase, or default 'UNK' if not provided
+  const prefix = estateOrHotel
+    ? estateOrHotel.split(" ")[0].toUpperCase()
+    : "UNK";
+
+  // Generate a random 4-digit number (1000–9999)
+  const random = Math.floor(1000 + Math.random() * 9000);
+
+  return `${prefix}-${random}`;
 }
 
 // Nigerian states and LGAs (sample - extend as needed)
