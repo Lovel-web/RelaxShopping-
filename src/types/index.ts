@@ -49,11 +49,9 @@ export interface BatchSlot {
 }
 
 export const BATCH_SLOTS: BatchSlot[] = [
-  { time: '08:00', label: '8:00 AM', cutoffHour: 6 },
   { time: '10:00', label: '10:00 AM', cutoffHour: 8 },
-  { time: '12:00', label: '12:00 PM', cutoffHour: 10 },
-  { time: '15:00', label: '3:00 PM', cutoffHour: 13 },
-  { time: '17:00', label: '5:00 PM', cutoffHour: 15 }
+  { time: '13:00', label: '1:00 PM', cutoffHour: 10 },
+  { time: '16:00', label: '4:00 PM', cutoffHour: 13 },
 ];
 
 export const DELIVERY_FEE = 400; // ₦400 fixed delivery fee
