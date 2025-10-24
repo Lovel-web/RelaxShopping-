@@ -59,3 +59,19 @@ export function generateOrderReference(estateOrHotel?: string): string {
 
   return `${prefix}-${random}`;
 };
+
+// ✅ Add this if missing — sample LGAs and states for testing
+export const SAMPLE_LGAS: Record<string, string[]> = {
+  Lagos: ["Ikeja", "Epe", "Badagry", "Lekki", "Ikorodu"],
+  Ogun: ["Abeokuta South", "Ado-Odo/Ota", "Ijebu Ode"],
+  Ondo: ["Akure South", "Akoko North", "Owo"],
+  FCT: ["Garki", "Wuse", "Maitama", "Gwagwalada"]
+};
+
+export const NIGERIAN_STATES: string[] = [
+  "Abia", "Adamawa", "Akwa Ibom", "Anambra", "Bauchi", "Bayelsa", "Benue",
+  "Borno", "Cross River", "Delta", "Ebonyi", "Edo", "Ekiti", "Enugu",
+  "Gombe", "Imo", "Jigawa", "Kaduna", "Kano", "Katsina", "Kebbi", "Kogi",
+  "Kwara", "Lagos", "Nasarawa", "Niger", "Ogun", "Ondo", "Osun", "Oyo",
+  "Plateau", "Rivers", "Sokoto", "Taraba", "Yobe", "Zamfara", "FCT"
+];
