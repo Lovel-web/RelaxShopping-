@@ -96,8 +96,8 @@ VITE_FIREBASE_APP_ID = (paste from Firebase)
 
 **Paystack variables** (from Step 4):
 ```
-VITE_PAYSTACK_PUBLIC_KEY = pk_test_xxxxx (your test public key)
-PAYSTACK_SECRET_KEY = sk_test_xxxxx (your test secret key)
+VITE_PAYSTACK_PUBLIC_KEY=your_paystack_public_key_here
+PAYSTACK_SECRET_KEY = your_paystack_secret_key_here
 ```
 
 6. Click "Deploy site"
