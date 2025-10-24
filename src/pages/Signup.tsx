@@ -15,14 +15,31 @@ export default function Signup() {
     shopName: "",
   });
 
+  // State data
+  const [states, setStates] = useState<string[]>([]);
   const [lgas, setLgas] = useState<any[]>([]);
   const [estates, setEstates] = useState<any[]>([]);
 
-  // ✅ Fetch LGAs from Firestore (admin-added)
+  // ✅ Fetch states dynamically from LGAs collection
+  useEffect(() => {
+    async function fetchStates() {
+      try {
+        const snap = await getDocs(collection(db, "lgas"));
+        const uniqueStates = Array.from(new Set(snap.docs.map((doc) => doc.data().state)));
+        setStates(uniqueStates);
+      } catch (err) {
+        console.error("Error fetching states:", err);
+      }
+    }
+    fetchStates();
+  }, []);
+
+  // ✅ Fetch LGAs when state is selected
   useEffect(() => {
     async function fetchLGAs() {
+      if (!formData.state) return;
       try {
-        const q = query(collection(db, "lgas"));
+        const q = query(collection(db, "lgas"), where("state", "==", formData.state));
         const snap = await getDocs(q);
         setLgas(snap.docs.map((doc) => ({ id: doc.id, ...doc.data() })));
       } catch (err) {
@@ -30,9 +47,9 @@ export default function Signup() {
       }
     }
     fetchLGAs();
-  }, []);
+  }, [formData.state]);
 
-  // ✅ Fetch Estates/Hotels based on selected LGA
+  // ✅ Fetch Estates/Hotels when an LGA is selected
   useEffect(() => {
     async function fetchEstates() {
       if (!formData.lga) return;
@@ -68,7 +85,7 @@ export default function Signup() {
       });
 
       alert("✅ Account created successfully!");
-      window.location.href = "/"; // Redirect to homepage or dashboard
+      window.location.href = "/";
     } catch (error) {
       console.error(error);
       alert("❌ Error creating account. Please try again.");
@@ -132,30 +149,39 @@ export default function Signup() {
           />
         )}
 
-        {/* State (manual input for now — admin can expand later) */}
-        <input
-          type="text"
-          placeholder="Enter State"
-          value={formData.state}
-          onChange={(e) => setFormData({ ...formData, state: e.target.value })}
-          className="border p-2 w-full rounded"
-          required
-        />
-
-        {/* LGA dropdown */}
+        {/* ✅ State Dropdown */}
         <select
-          value={formData.lga}
-          onChange={(e) => setFormData({ ...formData, lga: e.target.value })}
+          value={formData.state}
+          onChange={(e) => setFormData({ ...formData, state: e.target.value, lga: "", estate: "" })}
           className="border p-2 w-full rounded"
           required
         >
-          <option value="">Select LGA</option>
-          {lgas.map((lga) => (
-            <option key={lga.id} value={lga.id}>{lga.name}</option>
+          <option value="">Select State</option>
+          {states.map((s) => (
+            <option key={s} value={s}>
+              {s}
+            </option>
           ))}
         </select>
 
-        {/* Estate/Hotel dropdown */}
+        {/* ✅ LGA Dropdown */}
+        {formData.state && (
+          <select
+            value={formData.lga}
+            onChange={(e) => setFormData({ ...formData, lga: e.target.value, estate: "" })}
+            className="border p-2 w-full rounded"
+            required
+          >
+            <option value="">Select LGA</option>
+            {lgas.map((lga) => (
+              <option key={lga.id} value={lga.id}>
+                {lga.name}
+              </option>
+            ))}
+          </select>
+        )}
+
+        {/* ✅ Estate/Hotel Dropdown */}
         {formData.lga && (
           <select
             value={formData.estate}
@@ -165,7 +191,9 @@ export default function Signup() {
           >
             <option value="">Select Estate / Hotel</option>
             {estates.map((estate) => (
-              <option key={estate.id} value={estate.id}>{estate.name}</option>
+              <option key={estate.id} value={estate.name}>
+                {estate.name}
+              </option>
             ))}
           </select>
         )}
@@ -180,4 +208,4 @@ export default function Signup() {
       </form>
     </div>
   );
-                                          }
+            }
