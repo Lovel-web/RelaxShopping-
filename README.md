@@ -115,7 +115,7 @@ service cloud.firestore {
 3. Add public key to `.env`:
 
 ```env
-VITE_PAYSTACK_PUBLIC_KEY=pk_test_xxxxx
+VITE_PAYSTACK_PUBLIC_KEY=your_paystack_public_key_here
 ```
 
 4. The **Secret Key** will be added to Netlify later (never commit it to code)
@@ -190,7 +190,7 @@ In Netlify dashboard → Site settings → Environment variables, add:
 
 **Required:**
 ```
-PAYSTACK_SECRET_KEY=sk_test_xxxxx (or sk_live_xxxxx for production)
+PAYSTACK_SECRET_KEY = your_paystack_secret_key_here
 ```
 
 **Optional (if using official APIs):**
