@@ -166,15 +166,20 @@ export default function Index() {
 
       {/* Footer */}
       <footer className="border-t mt-16">
-        <div className="container px-4 py-8 mx-auto">
-          <div className="flex flex-col md:flex-row justify-between items-center gap-4">
+        <div className="text-center text-sm text-gray-600 mt-4">
+     <p>Customer Care: <a href="tel:+2347071175566" className="text-blue-600 hover:underline">+234 809 000 1234</a></p>
+      <p>Email: <a href="mailto:gameunpareil@gmail.com" className="text-blue-600 hover:underline">support@relaxshopping.net</a></p>
+        </div>
+         <div className="container px-4 py-8 mx-auto">
+           <div className="flex flex-col md:flex-row justify-between items-center gap-4">
             <div className="flex items-center gap-2">
               <Store className="w-6 h-6 text-primary" />
               <span className="font-bold text-gradient-primary">RelaxShopping</span>
             </div>
             <p className="text-sm text-muted-foreground">
               © 2025 RelaxShopping. Serving estates and hotels across Nigeria.
-            </p>
+              Powered by Gameunpareil Enterprise
+            </p> 
           </div>
         </div>
       </footer>
