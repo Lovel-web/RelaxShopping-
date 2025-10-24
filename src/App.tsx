@@ -1,3 +1,5 @@
+// ✅ src/App.tsx
+
 import AdminDashboard from "@/pages/AdminDashboard";
 import Login from "@/pages/Login";
 import { Toaster } from "@/components/ui/toaster";
@@ -20,36 +22,44 @@ import OrderSuccess from "@/pages/OrderSuccess";
 
 const queryClient = new QueryClient();
 
-const App = () => (
-  <QueryClientProvider client={queryClient}>
-    <TooltipProvider>
-      <AuthProvider>
-        <CartProvider>
-          <Toaster />
-          <Sonner />
-          <BrowserRouter>
-            <Routes>
-              <Route path="/" element={<Index />} />
+function App() {
+  return (
+    <QueryClientProvider client={queryClient}>
+      <TooltipProvider>
+        <AuthProvider>
+          <CartProvider>
+            <BrowserRouter>
               <Routes>
-               <Route path="/" element={<Index />} />
-               <Route path="/signup" element={<Signup />} />
-                <Route path="/staff-dashboard" element={<StaffDashboard />} />
+                {/* Main pages */}
+                <Route path="/" element={<Index />} />
+                <Route path="/signup" element={<Signup />} />
                 <Route path="/login" element={<Login />} />
-              <Route path="/auth" element={<Auth />} />
-                <Route path="/chat" element={<ChatPanel />} />
-                <Route path="/order-success" element={<OrderSuccess />} />
-                <Route path="/admin/payments" element={<AdminPayments />} />
-              <Route path="/shops" element={<Shops />} />
+                <Route path="/auth" element={<Auth />} />
+                <Route path="/shops" element={<Shops />} />
                 <Route path="/checkout" element={<Checkout />} />
+                <Route path="/order-success" element={<OrderSuccess />} />
+
+                {/* Admin & Staff */}
                 <Route path="/admin" element={<AdminDashboard />} />
-              {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
-              <Route path="*" element={<NotFound />} />
-            </Routes>
-          </BrowserRouter>
-        </CartProvider>
-      </AuthProvider>
-    </TooltipProvider>
-  </QueryClientProvider>
-);
+                <Route path="/admin/payments" element={<AdminPayments />} />
+                <Route path="/staff-dashboard" element={<StaffDashboard />} />
+
+                {/* Chat & Support */}
+                <Route path="/chat" element={<ChatPanel />} />
+
+                {/* Catch all */}
+                <Route path="*" element={<NotFound />} />
+              </Routes>
+
+              {/* Toast & Notifications */}
+              <Toaster />
+              <Sonner />
+            </BrowserRouter>
+          </CartProvider>
+        </AuthProvider>
+      </TooltipProvider>
+    </QueryClientProvider>
+  );
+}
 
 export default App;
