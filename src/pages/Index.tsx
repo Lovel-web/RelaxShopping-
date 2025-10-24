@@ -114,7 +114,7 @@ export default function Index() {
               <div>
                 <h4 className="font-bold text-lg mb-1">Add to Cart & Choose Time Slot</h4>
                 <p className="text-muted-foreground">
-                  Select items and pick your preferred delivery slot (8AM, 10AM, 12PM, 3PM, or 5PM)
+                  Select items and pick your preferred delivery slot (10AM, 1PM, or 4PM)
                 </p>
               </div>
             </div>
