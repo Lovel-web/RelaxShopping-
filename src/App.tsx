@@ -40,6 +40,8 @@ import OrderSuccess from "@/pages/OrderSuccess";
 
 import VendorDashboard from "@/pages/VendorDashboard";
 
+import VendorProducts from "@/pages/VendorProducts";
+
 const queryClient = new QueryClient();
 
 function App() {
@@ -85,6 +87,8 @@ function App() {
                 <Route path="/staff-dashboard" element={<StaffDashboard />} />
 
                 <Route path="/vendor-dashboard" element={<VendorDashboard />} />
+
+                <Route path="/vendor-products" element={<VendorProducts />} />
 
                 {/* Chat */}
 
