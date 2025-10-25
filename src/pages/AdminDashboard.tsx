@@ -1,188 +1,133 @@
+// ✅ src/pages/AdminDashboard.tsx
+
 import { useEffect, useState } from "react";
-import {
-  collection,
-  addDoc,
-  onSnapshot,
-  query,
-  where,
-  doc,
-  deleteDoc,
-  getDoc,
-} from "firebase/firestore";
-import { auth, db } from "@/lib/firebase";
-import { onAuthStateChanged } from "firebase/auth";
+
+import { useAuth } from "@/contexts/AuthContext";
+
+import { useNavigate } from "react-router-dom";
+
+import { Button } from "@/components/ui/button";
+
+import { Card } from "@/components/ui/card";
+
+import { toast } from "sonner";
 
 export default function AdminDashboard() {
-  const [user, setUser] = useState<any>(null);
-  const [adminState, setAdminState] = useState("");
-  const [lgaName, setLgaName] = useState("");
-  const [estateName, setEstateName] = useState("");
-  const [selectedLGA, setSelectedLGA] = useState("");
-  const [lgas, setLgas] = useState<any[]>([]);
-  const [estates, setEstates] = useState<any[]>([]);
 
-  // ✅ Step 1: Check if logged-in user is admin and get their state
+  const { user, logout } = useAuth();
+
+  const navigate = useNavigate();
+
+  const [stats, setStats] = useState({
+
+    vendors: 0,
+
+    customers: 0,
+
+    staff: 0,
+
+    orders: 0,
+
+  });
+
   useEffect(() => {
-    const unsub = onAuthStateChanged(auth, async (currentUser) => {
-      if (currentUser) {
-        const userRef = doc(db, "users", currentUser.uid);
-        const snap = await getDoc(userRef);
-        if (snap.exists()) {
-          const data = snap.data();
-          if (data.role === "admin") {
-            setUser(currentUser);
-            setAdminState(data.state || ""); // The state admin manages
-          } else {
-            alert("Access Denied: Only state admins can view this page.");
-          }
-        } else {
-          alert("User data not found.");
-        }
-      } else {
-        alert("Please login first.");
-      }
-    });
-    return () => unsub();
-  }, []);
 
-  // ✅ Step 2: Fetch LGAs for the admin’s state
-  useEffect(() => {
-    if (!user || !adminState) return;
-    const q = query(collection(db, "lgas"), where("state", "==", adminState));
-    const unsub = onSnapshot(q, (snapshot) => {
-      setLgas(snapshot.docs.map((d) => ({ id: d.id, ...d.data() })));
-    });
-    return () => unsub();
-  }, [user, adminState]);
+    if (!user) {
 
-  // ✅ Step 3: Fetch Estates/Hotels for selected LGA
-  useEffect(() => {
-    if (!selectedLGA) return;
-    const q = query(collection(db, "estates"), where("lgaId", "==", selectedLGA));
-    const unsub = onSnapshot(q, (snapshot) => {
-      setEstates(snapshot.docs.map((d) => ({ id: d.id, ...d.data() })));
-    });
-    return () => unsub();
-  }, [selectedLGA]);
+      navigate("/login");
 
-  // ✅ Add new LGA under this admin's state
-  async function addLGA() {
-    if (!lgaName) return alert("Enter LGA name");
-    await addDoc(collection(db, "lgas"), {
-      name: lgaName,
-      state: adminState,
-      stateAdminId: user.uid,
-      createdAt: new Date(),
-    });
-    alert(`✅ LGA "${lgaName}" added successfully for ${adminState} State.`);
-    setLgaName("");
-  }
+    } else if (user.role !== "admin") {
 
-  // ✅ Add new Estate/Hotel under selected LGA
-  async function addEstate() {
-    if (!estateName || !selectedLGA)
-      return alert("Select an LGA and enter Estate/Hotel name");
-    await addDoc(collection(db, "estates"), {
-      name: estateName,
-      lgaId: selectedLGA,
-      createdAt: new Date(),
-    });
-    alert(`✅ Estate/Hotel "${estateName}" added successfully!`);
-    setEstateName("");
-  }
+      toast.error("Unauthorized access");
 
-  // 🗑️ Delete LGA
-  async function deleteLGA(id: string) {
-    if (!confirm("Delete this LGA? (Linked estates will remain.)")) return;
-    await deleteDoc(doc(db, "lgas", id));
-  }
+      navigate("/");
 
-  // 🗑️ Delete Estate/Hotel
-  async function deleteEstate(id: string) {
-    if (!confirm("Delete this Estate/Hotel?")) return;
-    await deleteDoc(doc(db, "estates", id));
-  }
+    } else {
+
+      // Placeholder: replace with real backend data later
+
+      setStats({ vendors: 8, customers: 120, staff: 4, orders: 67 });
+
+    }
+
+  }, [user, navigate]);
+
+  const handleLogout = async () => {
+
+    await logout();
+
+    navigate("/");
+
+  };
 
   return (
-    <div className="p-6 max-w-2xl mx-auto">
-      <h1 className="text-2xl font-bold mb-4 text-center">🏛️ {adminState || "State"} Admin Dashboard</h1>
 
-      {/* Add LGA */}
-      <div className="mb-8 border p-4 rounded-lg">
-        <h2 className="font-semibold mb-2">➕ Add New LGA</h2>
-        <input
-          type="text"
-          placeholder={`Enter LGA name for ${adminState || "your state"}`}
-          value={lgaName}
-          onChange={(e) => setLgaName(e.target.value)}
-          className="border p-2 w-full rounded"
-        />
-        <button
-          onClick={addLGA}
-          className="bg-blue-600 text-white px-4 py-2 mt-2 rounded w-full"
-        >
-          Add LGA
-        </button>
+    <div className="min-h-screen bg-gray-50 p-6">
+
+      <div className="max-w-6xl mx-auto space-y-6">
+
+        <div className="flex justify-between items-center">
+
+          <h1 className="text-2xl font-bold text-primary">Admin Dashboard</h1>
+
+          <Button variant="outline" onClick={handleLogout}>Logout</Button>
+
+        </div>
+
+        <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+
+          <Card className="p-4 text-center shadow-sm">
+
+            <h2 className="text-lg font-semibold">Vendors</h2>
+
+            <p className="text-2xl font-bold text-primary">{stats.vendors}</p>
+
+          </Card>
+
+          <Card className="p-4 text-center shadow-sm">
+
+            <h2 className="text-lg font-semibold">Customers</h2>
+
+            <p className="text-2xl font-bold text-primary">{stats.customers}</p>
+
+          </Card>
+
+          <Card className="p-4 text-center shadow-sm">
+
+            <h2 className="text-lg font-semibold">Staff</h2>
+
+            <p className="text-2xl font-bold text-primary">{stats.staff}</p>
+
+          </Card>
+
+          <Card className="p-4 text-center shadow-sm">
+
+            <h2 className="text-lg font-semibold">Orders</h2>
+
+            <p className="text-2xl font-bold text-primary">{stats.orders}</p>
+
+          </Card>
+
+        </div>
+
+        <Card className="p-6 mt-4">
+
+          <h2 className="text-xl font-semibold mb-2">Manage Vendors</h2>
+
+          <p className="text-muted-foreground mb-4">
+
+            Add or verify vendors to appear on RelaxShopping.
+
+          </p>
+
+          <Button onClick={() => navigate("/vendor-dashboard")}>Go to Vendor Dashboard</Button>
+
+        </Card>
+
       </div>
 
-      {/* Display LGAs */}
-      <div className="mb-8 border p-4 rounded-lg">
-        <h2 className="font-semibold mb-2">📍 LGAs in {adminState}</h2>
-        {lgas.length === 0 && <p>No LGAs added yet.</p>}
-        {lgas.map((lga) => (
-          <div
-            key={lga.id}
-            className="flex justify-between p-2 border-b cursor-pointer hover:bg-gray-100"
-            onClick={() => setSelectedLGA(lga.id)}
-          >
-            <span>{lga.name}</span>
-            <button
-              onClick={(e) => {
-                e.stopPropagation();
-                deleteLGA(lga.id);
-              }}
-              className="text-red-500"
-            >
-              Delete
-            </button>
-          </div>
-        ))}
-      </div>
-
-      {/* Add Estate/Hotel */}
-      {selectedLGA && (
-        <div className="mb-8 border p-4 rounded-lg">
-          <h2 className="font-semibold mb-2">🏘️ Add Estate/Hotel</h2>
-          <input
-            type="text"
-            placeholder="Enter Estate or Hotel name"
-            value={estateName}
-            onChange={(e) => setEstateName(e.target.value)}
-            className="border p-2 w-full rounded"
-          />
-          <button
-            onClick={addEstate}
-            className="bg-green-600 text-white px-4 py-2 mt-2 rounded w-full"
-          >
-            Add Estate / Hotel
-          </button>
-        </div>
-      )}
-
-      {/* List Estates */}
-      {estates.length > 0 && (
-        <div className="border p-4 rounded-lg">
-          <h2 className="font-semibold mb-2">🏨 Estates / Hotels in Selected LGA</h2>
-          {estates.map((e) => (
-            <div key={e.id} className="flex justify-between p-2 border-b">
-              <span>{e.name}</span>
-              <button onClick={() => deleteEstate(e.id)} className="text-red-500">
-                Delete
-              </button>
-            </div>
-          ))}
-        </div>
-      )}
     </div>
+
   );
-        }
+
+}
