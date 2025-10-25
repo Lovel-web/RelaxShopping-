@@ -1,154 +1,130 @@
-import React, { createContext, useContext, useEffect, useState } from 'react';
-import { 
-  User, 
-  createUserWithEmailAndPassword, 
+// ✅ src/contexts/AuthContext.tsx
+import {
+  createContext,
+  useContext,
+  useEffect,
+  useState,
+  ReactNode,
+} from "react";
+import {
+  createUserWithEmailAndPassword,
   signInWithEmailAndPassword,
-  signOut as firebaseSignOut,
+  signOut,
+  sendPasswordResetEmail,
   onAuthStateChanged,
-  sendPasswordResetEmail
-} from 'firebase/auth';
-import { doc, setDoc, getDoc } from 'firebase/firestore';
-import { auth, db } from '@/lib/firebase';
-import { UserProfile } from '@/types';
+} from "firebase/auth";
+import { auth, db } from "@/lib/firebase";
+import { doc, getDoc, setDoc } from "firebase/firestore";
+import { useNavigate } from "react-router-dom";
 
 interface AuthContextType {
-  user: User | null;
-  userProfile: UserProfile | null;
+  user: any;
   loading: boolean;
-  signUp: (email: string, password: string, profileData: Omit<UserProfile, 'uid' | 'email' | 'createdAt' | 'updatedAt'>) => Promise<{ error: any }>;
-  signIn: (email: string, password: string) => Promise<{ error: any }>;
-  signOut: () => Promise<void>;
-  resetPassword: (email: string) => Promise<{ error: any }>;
-  refreshProfile: () => Promise<void>;
+  signUp: (email: string, password: string, data: any) => Promise<{ error?: any }>;
+  signIn: (email: string, password: string) => Promise<{ error?: any }>;
+  logout: () => Promise<void>;
+  resetPassword: (email: string) => Promise<{ error?: any }>;
 }
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
 
-export const useAuth = () => {
-  const context = useContext(AuthContext);
-  if (!context) {
-    throw new Error('useAuth must be used within AuthProvider');
-  }
-  return context;
-};
-
-export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
-  const [user, setUser] = useState<User | null>(null);
-  const [userProfile, setUserProfile] = useState<UserProfile | null>(null);
+export function AuthProvider({ children }: { children: ReactNode }) {
+  const [user, setUser] = useState<any>(null);
   const [loading, setLoading] = useState(true);
+  const navigate = useNavigate();
 
-  const fetchUserProfile = async (uid: string) => {
-    try {
-      const profileDoc = await getDoc(doc(db, 'users', uid));
-      if (profileDoc.exists()) {
-        const data = profileDoc.data();
-        setUserProfile({
-          ...data,
-          createdAt: data.createdAt?.toDate(),
-          updatedAt: data.updatedAt?.toDate()
-        } as UserProfile);
-      }
-    } catch (error) {
-      console.error('Error fetching user profile:', error);
-    }
-  };
-
+  // ✅ Watch for user login/logout
   useEffect(() => {
-    const unsubscribe = onAuthStateChanged(auth, (currentUser) => {
-      setUser(currentUser);
-      
-      if (currentUser) {
-        // Defer profile fetching to avoid blocking auth state
-        setTimeout(() => {
-          fetchUserProfile(currentUser.uid);
-        }, 0);
+    const unsub = onAuthStateChanged(auth, async (firebaseUser) => {
+      if (firebaseUser) {
+        const docRef = doc(db, "users", firebaseUser.uid);
+        const docSnap = await getDoc(docRef);
+        if (docSnap.exists()) {
+          const userData = { uid: firebaseUser.uid, ...docSnap.data() };
+          setUser(userData);
+
+          // ✅ Auto-redirect based on role
+          switch (userData.role) {
+            case "admin":
+              navigate("/admin");
+              break;
+            case "vendor":
+              navigate("/vendor-dashboard");
+              break;
+            case "staff":
+              navigate("/staff-dashboard");
+              break;
+            default:
+              navigate("/shops");
+          }
+        } else {
+          setUser(firebaseUser);
+        }
       } else {
-        setUserProfile(null);
+        setUser(null);
       }
-      
       setLoading(false);
     });
 
-    return () => unsubscribe();
-  }, []);
+    return () => unsub();
+  }, [navigate]);
 
-  const signUp = async (
-    email: string, 
-    password: string, 
-    profileData: Omit<UserProfile, 'uid' | 'email' | 'createdAt' | 'updatedAt'>
-  ) => {
+  // ✅ Sign Up
+  async function signUp(email: string, password: string, data: any) {
     try {
-      const userCredential = await createUserWithEmailAndPassword(auth, email, password);
-      
-      // Create user profile in Firestore
-      const newProfile: UserProfile = {
-        uid: userCredential.user.uid,
+      const cred = await createUserWithEmailAndPassword(auth, email, password);
+      const uid = cred.user.uid;
+      await setDoc(doc(db, "users", uid), {
+        uid,
         email,
-        ...profileData,
+        ...data,
         createdAt: new Date(),
-        updatedAt: new Date()
-      };
-
-      await setDoc(doc(db, 'users', userCredential.user.uid), newProfile);
-      setUserProfile(newProfile);
-      
-      return { error: null };
-    } catch (error: any) {
-      console.error('Signup error:', error);
+      });
+      return {};
+    } catch (error) {
       return { error };
     }
-  };
+  }
 
-  const signIn = async (email: string, password: string) => {
+  // ✅ Sign In
+  async function signIn(email: string, password: string) {
     try {
       await signInWithEmailAndPassword(auth, email, password);
-      return { error: null };
-    } catch (error: any) {
-      console.error('Sign in error:', error);
+      return {};
+    } catch (error) {
       return { error };
     }
-  };
+  }
 
-  const signOut = async () => {
-    try {
-      await firebaseSignOut(auth);
-      setUserProfile(null);
-    } catch (error) {
-      console.error('Sign out error:', error);
-      throw error;
-    }
-  };
+  // ✅ Logout
+  async function logout() {
+    await signOut(auth);
+    navigate("/");
+  }
 
-  const resetPassword = async (email: string) => {
+  // ✅ Password Reset
+  async function resetPassword(email: string) {
     try {
       await sendPasswordResetEmail(auth, email);
-      return { error: null };
-    } catch (error: any) {
-      console.error('Password reset error:', error);
+      return {};
+    } catch (error) {
       return { error };
     }
-  };
-
-  const refreshProfile = async () => {
-    if (user) {
-      await fetchUserProfile(user.uid);
-    }
-  };
-
-  const value = {
-    user,
-    userProfile,
-    loading,
-    signUp,
-    signIn,
-    signOut,
-    resetPassword,
-    refreshProfile
-  };
+  }
 
   return (
-    <AuthContext.Provider value={value}>
+    <AuthContext.Provider
+      value={{ user, loading, signUp, signIn, logout, resetPassword }}
+    >
       {children}
     </AuthContext.Provider>
   );
-};
+}
+
+export function useAuth() {
+  const context = useContext(AuthContext);
+  if (!context) {
+    throw new Error("useAuth must be used within an AuthProvider");
+  }
+  return context;
+}

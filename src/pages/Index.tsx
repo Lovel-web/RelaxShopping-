@@ -1,183 +1,148 @@
-import { Link } from 'react-router-dom';
-import { Button } from '@/components/ui/button';
-import { Store, Clock, MapPin, ShoppingBag, CheckCircle2, Truck } from 'lucide-react';
-import { useAuth } from '@/contexts/AuthContext';
+import { Link } from "react-router-dom";
+import { Button } from "@/components/ui/button";
 
 export default function Index() {
-  const { user } = useAuth();
-
   return (
-    <div className="min-h-screen bg-gradient-to-br from-primary/5 via-background to-secondary/5">
-      {/* Hero Section */}
-      <section className="container px-4 py-20 mx-auto">
-        <div className="max-w-4xl mx-auto text-center animate-slide-up">
-          <div className="inline-flex items-center justify-center w-20 h-20 mb-6 rounded-2xl bg-gradient-to-br from-primary to-primary-light">
-            <Store className="w-12 h-12 text-primary-foreground" />
-          </div>
-          
-          <h1 className="text-5xl md:text-6xl font-bold mb-6">
-            <span className="text-gradient-primary">Fresh Groceries</span>
-            <br />
-            Delivered on Schedule
-          </h1>
-          
-          <p className="text-xl text-muted-foreground mb-8 max-w-2xl mx-auto">
-            Zeezy Pro brings live store prices and scheduled batch delivery to estates and hotels across Nigeria. 
-            Save time, get the best prices, and never miss a delivery window.
-          </p>
+    <div className="flex flex-col min-h-screen bg-white text-gray-800">
+      {/* HERO SECTION */}
+      <section className="flex flex-col items-center justify-center text-center px-4 py-24 bg-gradient-to-br from-blue-50 via-white to-green-50">
+        <h1 className="text-4xl sm:text-6xl font-bold mb-4 text-gray-900">
+          Fresh Groceries <br /> Delivered on Schedule
+        </h1>
+        <p className="text-lg sm:text-xl max-w-2xl mb-6 text-gray-600">
+          RelaxShopping brings live store prices and scheduled batch delivery to
+          estates and hotels across Nigeria. Save time, get the best prices, and
+          never miss a delivery window.
+        </p>
 
-          <div className="flex flex-col sm:flex-row gap-4 justify-center">
-            {user ? (
-              <Link to="/shops">
-                <Button variant="hero" size="lg" className="w-full sm:w-auto">
-                  <ShoppingBag className="mr-2 h-5 w-5" />
-                  Start Shopping
-                </Button>
-              </Link>
-            ) : (
-              <>
-                <Link to="/auth?mode=signup">
-                  <Button variant="hero" size="lg" className="w-full sm:w-auto">
-                    Get Started Free
-                  </Button>
-                </Link>
-                <Link to="/auth">
-                  <Button variant="outline" size="lg" className="w-full sm:w-auto">
-                    Sign In
-                  </Button>
-                </Link>
-              </>
-            )}
-          </div>
-        </div>
-      </section>
-
-      {/* Features Section */}
-      <section className="container px-4 py-16 mx-auto">
-        <div className="grid md:grid-cols-3 gap-8 max-w-5xl mx-auto">
-          <div className="bg-card p-6 rounded-xl shadow-md hover:shadow-lg transition-all border border-border">
-            <div className="w-12 h-12 rounded-lg bg-primary/10 flex items-center justify-center mb-4">
-              <Clock className="w-6 h-6 text-primary" />
-            </div>
-            <h3 className="text-xl font-bold mb-2">Scheduled Deliveries</h3>
-            <p className="text-muted-foreground">
-              Choose from 5 daily time slots. Your orders are batched and delivered right on time.
-            </p>
-          </div>
-
-          <div className="bg-card p-6 rounded-xl shadow-md hover:shadow-lg transition-all border border-border">
-            <div className="w-12 h-12 rounded-lg bg-secondary/10 flex items-center justify-center mb-4">
-              <CheckCircle2 className="w-6 h-6 text-secondary" />
-            </div>
-            <h3 className="text-xl font-bold mb-2">Live Store Prices</h3>
-            <p className="text-muted-foreground">
-              See real-time prices from Chowdeck, Shoprite, and partner stores. No hidden fees.
-            </p>
-          </div>
-
-          <div className="bg-card p-6 rounded-xl shadow-md hover:shadow-lg transition-all border border-border">
-            <div className="w-12 h-12 rounded-lg bg-primary/10 flex items-center justify-center mb-4">
-              <Truck className="w-6 h-6 text-primary" />
-            </div>
-            <h3 className="text-xl font-bold mb-2">Estate-Focused</h3>
-            <p className="text-muted-foreground">
-              Batch deliveries by estate or hotel. Efficient routes mean lower costs and faster service.
-            </p>
-          </div>
-        </div>
-      </section>
-
-      {/* How It Works */}
-      <section className="container px-4 py-16 mx-auto bg-muted/30 rounded-3xl">
-        <div className="max-w-4xl mx-auto">
-          <h2 className="text-3xl md:text-4xl font-bold text-center mb-12">
-            How It Works
-          </h2>
-          
-          <div className="space-y-8">
-            <div className="flex gap-4 items-start">
-              <div className="flex-shrink-0 w-10 h-10 rounded-full bg-primary text-primary-foreground flex items-center justify-center font-bold">
-                1
-              </div>
-              <div>
-                <h4 className="font-bold text-lg mb-1">Browse Live Prices</h4>
-                <p className="text-muted-foreground">
-                  See current pricing from all partner stores in one place
-                </p>
-              </div>
-            </div>
-
-            <div className="flex gap-4 items-start">
-              <div className="flex-shrink-0 w-10 h-10 rounded-full bg-primary text-primary-foreground flex items-center justify-center font-bold">
-                2
-              </div>
-              <div>
-                <h4 className="font-bold text-lg mb-1">Add to Cart & Choose Time Slot</h4>
-                <p className="text-muted-foreground">
-                  Select items and pick your preferred delivery slot (8AM, 10AM, 12PM, 3PM, or 5PM)
-                </p>
-              </div>
-            </div>
-
-            <div className="flex gap-4 items-start">
-              <div className="flex-shrink-0 w-10 h-10 rounded-full bg-primary text-primary-foreground flex items-center justify-center font-bold">
-                3
-              </div>
-              <div>
-                <h4 className="font-bold text-lg mb-1">Pay Securely with Paystack</h4>
-                <p className="text-muted-foreground">
-                  Complete payment using Paystack's secure checkout. Fixed ₦400 delivery fee.
-                </p>
-              </div>
-            </div>
-
-            <div className="flex gap-4 items-start">
-              <div className="flex-shrink-0 w-10 h-10 rounded-full bg-primary text-primary-foreground flex items-center justify-center font-bold">
-                4
-              </div>
-              <div>
-                <h4 className="font-bold text-lg mb-1">Get Delivered on Time</h4>
-                <p className="text-muted-foreground">
-                  Orders are batched with other estate residents and delivered in your chosen window
-                </p>
-              </div>
-            </div>
-          </div>
-        </div>
-      </section>
-
-      {/* CTA Section */}
-      {!user && (
-        <section className="container px-4 py-20 mx-auto text-center">
-          <h2 className="text-3xl md:text-4xl font-bold mb-6">
-            Ready to Save Time and Money?
-          </h2>
-          <p className="text-xl text-muted-foreground mb-8 max-w-2xl mx-auto">
-            Join estates and hotels across Nigeria who trust Zeezy Pro for their grocery needs
-          </p>
-          <Link to="/auth?mode=signup">
-            <Button variant="hero" size="lg">
-              <MapPin className="mr-2 h-5 w-5" />
-              Create Your Account
+        {/* MAIN ACTIONS */}
+        <div className="flex flex-col sm:flex-row gap-4 justify-center">
+          <Link to="/shops">
+            <Button size="lg" className="bg-blue-600 hover:bg-blue-700">
+              🛍 Start Shopping
             </Button>
           </Link>
-        </section>
-      )}
 
-      {/* Footer */}
-      <footer className="border-t mt-16">
-        <div className="container px-4 py-8 mx-auto">
-          <div className="flex flex-col md:flex-row justify-between items-center gap-4">
-            <div className="flex items-center gap-2">
-              <Store className="w-6 h-6 text-primary" />
-              <span className="font-bold text-gradient-primary">Zeezy Pro</span>
+          {/* Customer Signup - top */}
+          <Link to="/auth?mode=signup&role=customer">
+            <Button
+              size="lg"
+              className="bg-green-600 hover:bg-green-700 text-white"
+            >
+              🛒 Sign Up as Customer
+            </Button>
+          </Link>
+        </div>
+      </section>
+
+      {/* FEATURES SECTION */}
+      <section className="grid gap-12 sm:grid-cols-3 px-6 py-16 max-w-6xl mx-auto">
+        <div className="text-center">
+          <h3 className="text-xl font-semibold mb-2">🕒 Scheduled Deliveries</h3>
+          <p className="text-gray-600">
+            Choose from 3 daily time slots. Your orders are batched and delivered right on time.
+          </p>
+        </div>
+        <div className="text-center">
+          <h3 className="text-xl font-semibold mb-2">💰 Live Store Prices</h3>
+          <p className="text-gray-600">
+            See real-time prices from your favourite stores. No hidden fees.
+          </p>
+        </div>
+        <div className="text-center">
+          <h3 className="text-xl font-semibold mb-2">🏢 Estate-Focused</h3>
+          <p className="text-gray-600">
+            Batch deliveries by estate or hotel. Efficient routes mean lower costs and faster service.
+          </p>
+        </div>
+      </section>
+
+      {/* HOW IT WORKS */}
+      <section className="bg-gray-50 py-16 px-6">
+        <div className="max-w-4xl mx-auto text-center">
+          <h2 className="text-3xl font-bold mb-8 text-gray-800">How It Works</h2>
+
+          <div className="space-y-8 text-left">
+            <div>
+              <h3 className="text-xl font-semibold">1. Browse Live Prices</h3>
+              <p className="text-gray-600">
+                See current pricing from all partner stores in one place.
+              </p>
             </div>
-            <p className="text-sm text-muted-foreground">
-              © 2025 Zeezy Pro. Serving estates and hotels across Nigeria.
-            </p>
+            <div>
+              <h3 className="text-xl font-semibold">2. Add to Cart & Choose Time Slot</h3>
+              <p className="text-gray-600">
+                Select items and pick your preferred delivery slot (10AM, 1PM, or 4PM).
+              </p>
+            </div>
+            <div>
+              <h3 className="text-xl font-semibold">3. Pay Securely with Paystack</h3>
+              <p className="text-gray-600">
+                Complete payment using Paystack's secure checkout. Fixed ₦400 delivery fee.
+              </p>
+            </div>
+            <div>
+              <h3 className="text-xl font-semibold">4. Get Delivered on Time</h3>
+              <p className="text-gray-600">
+                Orders are batched with other estate residents and delivered in your chosen window.
+              </p>
+            </div>
+          </div>
+
+          {/* Customer Signup - middle */}
+          <div className="text-center mt-12">
+            <Link to="/auth?mode=signup&role=customer">
+              <Button
+                size="lg"
+                className="bg-green-600 hover:bg-green-700 text-white"
+              >
+                🛍 Join as a Customer
+              </Button>
+            </Link>
           </div>
         </div>
+      </section>
+
+      {/* OTHER ROLES SIGNUP */}
+      <section className="bg-gray-100 py-12 border-t mt-12">
+        <div className="text-center max-w-3xl mx-auto px-4">
+          <h2 className="text-2xl font-bold mb-6 text-gray-800">
+            Join the RelaxShopping Network
+          </h2>
+          <p className="text-gray-600 mb-8">
+            Are you part of our delivery or management team? Choose your portal below.
+          </p>
+
+          <div className="flex flex-wrap justify-center gap-4">
+            <Link to="/auth?mode=signup&role=staff">
+              <Button className="bg-orange-500 hover:bg-orange-600 text-white">
+                👷 Staff Signup
+              </Button>
+            </Link>
+
+            <Link to="/auth?mode=signup&role=vendor">
+              <Button className="bg-green-600 hover:bg-green-700 text-white">
+                🏪 Vendor Signup
+              </Button>
+            </Link>
+
+            <Link to="/auth?mode=login&role=admin">
+              <Button className="bg-red-600 hover:bg-red-700 text-white">
+                🧠 Admin Login
+              </Button>
+            </Link>
+          </div>
+        </div>
+      </section>
+
+      {/* FOOTER */}
+      <footer className="bg-gray-900 text-white text-center py-6 mt-auto">
+        <p className="text-sm">
+          © 2025 <strong>RelaxShopping</strong>. Serving estates and hotels across Nigeria.
+          <br />
+          Powered by <strong>GAMEUNPAREIL Enterprise</strong>
+        </p>
       </footer>
     </div>
   );
-}
+      }

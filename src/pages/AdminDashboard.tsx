@@ -1,52 +1,133 @@
+// ✅ src/pages/AdminDashboard.tsx
+
 import { useEffect, useState } from "react";
-import { db } from "@/lib/firebase";
-import { collection, getDocs, updateDoc, doc } from "firebase/firestore";
+
+import { useAuth } from "@/contexts/AuthContext";
+
+import { useNavigate } from "react-router-dom";
+
 import { Button } from "@/components/ui/button";
+
+import { Card } from "@/components/ui/card";
+
 import { toast } from "sonner";
 
 export default function AdminDashboard() {
-  const [orders, setOrders] = useState([]);
-  const [vendors, setVendors] = useState([]);
+
+  const { user, logout } = useAuth();
+
+  const navigate = useNavigate();
+
+  const [stats, setStats] = useState({
+
+    vendors: 0,
+
+    customers: 0,
+
+    staff: 0,
+
+    orders: 0,
+
+  });
 
   useEffect(() => {
-    const fetchData = async () => {
-      const ordersSnap = await getDocs(collection(db, "orders"));
-      const vendorsSnap = await getDocs(collection(db, "vendors"));
-      setOrders(ordersSnap.docs.map(d => ({ id: d.id, ...d.data() })));
-      setVendors(vendorsSnap.docs.map(d => ({ id: d.id, ...d.data() })));
-    };
-    fetchData();
-  }, []);
 
-  const handleConfirmPayment = async (orderId) => {
-    await updateDoc(doc(db, "orders", orderId), { status: "confirmed" });
-    toast.success("Payment confirmed and sent to vendor!");
-  };
+    if (!user) {
 
-  const handleRefund = async (orderId) => {
-    await updateDoc(doc(db, "orders", orderId), { status: "refunded" });
-    toast.success("Refund issued successfully.");
+      navigate("/login");
+
+    } else if (user.role !== "admin") {
+
+      toast.error("Unauthorized access");
+
+      navigate("/");
+
+    } else {
+
+      // Placeholder: replace with real backend data later
+
+      setStats({ vendors: 8, customers: 120, staff: 4, orders: 67 });
+
+    }
+
+  }, [user, navigate]);
+
+  const handleLogout = async () => {
+
+    await logout();
+
+    navigate("/");
+
   };
 
   return (
-    <div className="p-6 max-w-4xl mx-auto">
-      <h1 className="text-2xl font-bold mb-4">Admin Dashboard</h1>
-      <h2 className="text-lg font-semibold mt-4">Pending Orders</h2>
-      {orders.length === 0 ? (
-        <p>No orders yet.</p>
-      ) : (
-        orders.map((order) => (
-          <div key={order.id} className="border p-3 my-2 rounded-md">
-            <p><strong>Order ID:</strong> {order.id}</p>
-            <p><strong>Customer:</strong> {order.customerName}</p>
-            <p><strong>Status:</strong> {order.status}</p>
-            <div className="flex gap-2 mt-2">
-              <Button onClick={() => handleConfirmPayment(order.id)}>Confirm Payment</Button>
-              <Button variant="destructive" onClick={() => handleRefund(order.id)}>Refund</Button>
-            </div>
-          </div>
-        ))
-      )}
+
+    <div className="min-h-screen bg-gray-50 p-6">
+
+      <div className="max-w-6xl mx-auto space-y-6">
+
+        <div className="flex justify-between items-center">
+
+          <h1 className="text-2xl font-bold text-primary">Admin Dashboard</h1>
+
+          <Button variant="outline" onClick={handleLogout}>Logout</Button>
+
+        </div>
+
+        <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+
+          <Card className="p-4 text-center shadow-sm">
+
+            <h2 className="text-lg font-semibold">Vendors</h2>
+
+            <p className="text-2xl font-bold text-primary">{stats.vendors}</p>
+
+          </Card>
+
+          <Card className="p-4 text-center shadow-sm">
+
+            <h2 className="text-lg font-semibold">Customers</h2>
+
+            <p className="text-2xl font-bold text-primary">{stats.customers}</p>
+
+          </Card>
+
+          <Card className="p-4 text-center shadow-sm">
+
+            <h2 className="text-lg font-semibold">Staff</h2>
+
+            <p className="text-2xl font-bold text-primary">{stats.staff}</p>
+
+          </Card>
+
+          <Card className="p-4 text-center shadow-sm">
+
+            <h2 className="text-lg font-semibold">Orders</h2>
+
+            <p className="text-2xl font-bold text-primary">{stats.orders}</p>
+
+          </Card>
+
+        </div>
+
+        <Card className="p-6 mt-4">
+
+          <h2 className="text-xl font-semibold mb-2">Manage Vendors</h2>
+
+          <p className="text-muted-foreground mb-4">
+
+            Add or verify vendors to appear on RelaxShopping.
+
+          </p>
+
+          <Button onClick={() => navigate("/vendor-dashboard")}>Go to Vendor Dashboard</Button>
+
+        </Card>
+
+      </div>
+
     </div>
+
   );
+
 }

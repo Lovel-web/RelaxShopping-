@@ -1,6 +1,6 @@
 # RelaxShopping - Quick Setup Guide for Non-Technical Users
 
-This guide will help you set up and deploy Zeezy Pro step by step.
+This guide will help you set up and deploy RelaxShopping step by step.
 
 ## 📋 What You'll Need
 
@@ -24,7 +24,7 @@ This guide will help you set up and deploy Zeezy Pro step by step.
 
 1. Go to https://console.firebase.google.com/
 2. Click "Create a project" or "Add project"
-3. Name it "Zeezy Pro" (or any name you like)
+3. Name it "RelaxShopping" (or any name you like)
 4. Disable Google Analytics (you can enable later if needed)
 5. Click "Create project"
 
@@ -46,7 +46,7 @@ This guide will help you set up and deploy Zeezy Pro step by step.
 2. Click "Project settings"
 3. Scroll down to "Your apps"
 4. Click the "</>" icon (Web)
-5. Register app name as "Zeezy Pro Web"
+5. Register app name as "RelaxShopping Web"
 6. Copy all the values shown (you'll need these later)
 7. **Keep these safe!** You'll paste them in Netlify
 
@@ -76,7 +76,7 @@ This guide will help you set up and deploy Zeezy Pro step by step.
 
 1. Go to https://app.netlify.com/
 2. Click "Add new site" → "Import an existing project"
-3. Connect to GitHub and select your Zeezy Pro repository
+3. Connect to GitHub and select your RelaxShopping repository
 4. Netlify should auto-detect the settings
 5. Before clicking "Deploy", click "Advanced" to add environment variables
 
@@ -96,8 +96,8 @@ VITE_FIREBASE_APP_ID = (paste from Firebase)
 
 **Paystack variables** (from Step 4):
 ```
-VITE_PAYSTACK_PUBLIC_KEY = pk_test_xxxxx (your test public key)
-PAYSTACK_SECRET_KEY = sk_test_xxxxx (your test secret key)
+VITE_PAYSTACK_PUBLIC_KEY=your_paystack_public_key_here
+PAYSTACK_SECRET_KEY = your_paystack_secret_key_here
 ```
 
 6. Click "Deploy site"
@@ -218,4 +218,4 @@ Contact Chowdeck or Shoprite for B2B API access. This will:
 
 ---
 
-**🎉 Congratulations!** Your Zeezy Pro platform is now live.
+**🎉 Congratulations!** Your RelaxShopping platform is now live.
