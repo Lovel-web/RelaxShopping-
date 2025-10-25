@@ -97,14 +97,13 @@ export default function Auth() {
     setLoading(true);
 
     const { error } = await signUp(email, password, {
-      fullName: fullName.trim(),
-      phone,
-      state,
-      lga,
-      estateOrHotel: estateOrHotel.trim(),
-      role: 'customer'
-    });
-
+  fullName: fullName.trim(),
+  phone,
+  state,
+  lga,
+  estateOrHotel: estateOrHotel.trim(),
+  role
+});
     if (error) {
       if (error.code === 'auth/email-already-in-use') {
         toast.error('An account with this email already exists');
