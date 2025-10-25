@@ -1,148 +1,133 @@
-import { Link } from "react-router-dom";
 import { Button } from "@/components/ui/button";
+import { useNavigate } from "react-router-dom";
+import { ShoppingBag, Clock, MapPin, CreditCard } from "lucide-react";
 
 export default function Index() {
+  const navigate = useNavigate();
+
+  const handleCustomerSignup = () => navigate("/auth?mode=signup&role=customer");
+  const handleAdminSignup = () => navigate("/auth?mode=signup&role=admin");
+  const handleVendorSignup = () => navigate("/auth?mode=signup&role=vendor");
+  const handleStaffSignup = () => navigate("/auth?mode=signup&role=staff");
+
   return (
-    <div className="flex flex-col min-h-screen bg-white text-gray-800">
-      {/* HERO SECTION */}
-      <section className="flex flex-col items-center justify-center text-center px-4 py-24 bg-gradient-to-br from-blue-50 via-white to-green-50">
-        <h1 className="text-4xl sm:text-6xl font-bold mb-4 text-gray-900">
-          Fresh Groceries <br /> Delivered on Schedule
-        </h1>
-        <p className="text-lg sm:text-xl max-w-2xl mb-6 text-gray-600">
-          RelaxShopping brings live store prices and scheduled batch delivery to
-          estates and hotels across Nigeria. Save time, get the best prices, and
-          never miss a delivery window.
-        </p>
-
-        {/* MAIN ACTIONS */}
-        <div className="flex flex-col sm:flex-row gap-4 justify-center">
-          <Link to="/shops">
-            <Button size="lg" className="bg-blue-600 hover:bg-blue-700">
-              🛍 Start Shopping
-            </Button>
-          </Link>
-
-          {/* Customer Signup - top */}
-          <Link to="/auth?mode=signup&role=customer">
-            <Button
-              size="lg"
-              className="bg-green-600 hover:bg-green-700 text-white"
-            >
-              🛒 Sign Up as Customer
-            </Button>
-          </Link>
+    <div className="min-h-screen flex flex-col">
+      {/* Hero Section */}
+      <section className="bg-gradient-to-br from-primary/10 via-white to-secondary/10 py-20 text-center">
+        <div className="container mx-auto px-6">
+          <h1 className="text-4xl md:text-5xl font-bold mb-6 text-gray-900">
+            Fresh Groceries <br /> Delivered on Schedule
+          </h1>
+          <p className="text-lg text-gray-600 max-w-2xl mx-auto mb-8">
+            RelaxShopping brings live store prices and scheduled batch delivery
+            to estates and hotels across Nigeria. Save time, get the best prices,
+            and never miss a delivery window.
+          </p>
+          <Button
+            onClick={handleCustomerSignup}
+            className="bg-primary text-white px-8 py-4 text-lg rounded-xl hover:bg-primary/90 transition"
+          >
+            Sign Up as Customer
+          </Button>
         </div>
       </section>
 
-      {/* FEATURES SECTION */}
-      <section className="grid gap-12 sm:grid-cols-3 px-6 py-16 max-w-6xl mx-auto">
-        <div className="text-center">
-          <h3 className="text-xl font-semibold mb-2">🕒 Scheduled Deliveries</h3>
-          <p className="text-gray-600">
-            Choose from 3 daily time slots. Your orders are batched and delivered right on time.
-          </p>
-        </div>
-        <div className="text-center">
-          <h3 className="text-xl font-semibold mb-2">💰 Live Store Prices</h3>
-          <p className="text-gray-600">
-            See real-time prices from your favourite stores. No hidden fees.
-          </p>
-        </div>
-        <div className="text-center">
-          <h3 className="text-xl font-semibold mb-2">🏢 Estate-Focused</h3>
-          <p className="text-gray-600">
-            Batch deliveries by estate or hotel. Efficient routes mean lower costs and faster service.
-          </p>
-        </div>
-      </section>
-
-      {/* HOW IT WORKS */}
-      <section className="bg-gray-50 py-16 px-6">
-        <div className="max-w-4xl mx-auto text-center">
-          <h2 className="text-3xl font-bold mb-8 text-gray-800">How It Works</h2>
-
-          <div className="space-y-8 text-left">
-            <div>
-              <h3 className="text-xl font-semibold">1. Browse Live Prices</h3>
-              <p className="text-gray-600">
-                See current pricing from all partner stores in one place.
-              </p>
-            </div>
-            <div>
-              <h3 className="text-xl font-semibold">2. Add to Cart & Choose Time Slot</h3>
-              <p className="text-gray-600">
-                Select items and pick your preferred delivery slot (10AM, 1PM, or 4PM).
-              </p>
-            </div>
-            <div>
-              <h3 className="text-xl font-semibold">3. Pay Securely with Paystack</h3>
-              <p className="text-gray-600">
-                Complete payment using Paystack's secure checkout. Fixed ₦400 delivery fee.
-              </p>
-            </div>
-            <div>
-              <h3 className="text-xl font-semibold">4. Get Delivered on Time</h3>
-              <p className="text-gray-600">
-                Orders are batched with other estate residents and delivered in your chosen window.
-              </p>
-            </div>
+      {/* Features Section */}
+      <section className="py-16 bg-white">
+        <div className="container mx-auto px-6 grid md:grid-cols-3 gap-10 text-center">
+          <div>
+            <Clock className="w-12 h-12 text-primary mx-auto mb-4" />
+            <h3 className="text-xl font-semibold mb-2">Scheduled Deliveries</h3>
+            <p className="text-gray-600">
+              Choose from 3 daily time slots. Your orders are batched and delivered right on time.
+            </p>
           </div>
 
-          {/* Customer Signup - middle */}
-          <div className="text-center mt-12">
-            <Link to="/auth?mode=signup&role=customer">
-              <Button
-                size="lg"
-                className="bg-green-600 hover:bg-green-700 text-white"
-              >
-                🛍 Join as a Customer
-              </Button>
-            </Link>
+          <div>
+            <CreditCard className="w-12 h-12 text-primary mx-auto mb-4" />
+            <h3 className="text-xl font-semibold mb-2">Live Store Prices</h3>
+            <p className="text-gray-600">
+              See real-time prices from your favourite stores. No hidden fees.
+            </p>
+          </div>
+
+          <div>
+            <MapPin className="w-12 h-12 text-primary mx-auto mb-4" />
+            <h3 className="text-xl font-semibold mb-2">Estate-Focused</h3>
+            <p className="text-gray-600">
+              Batch deliveries by estate or hotel. Efficient routes mean lower costs and faster service.
+            </p>
           </div>
         </div>
       </section>
 
-      {/* OTHER ROLES SIGNUP */}
-      <section className="bg-gray-100 py-12 border-t mt-12">
-        <div className="text-center max-w-3xl mx-auto px-4">
-          <h2 className="text-2xl font-bold mb-6 text-gray-800">
-            Join the RelaxShopping Network
-          </h2>
-          <p className="text-gray-600 mb-8">
-            Are you part of our delivery or management team? Choose your portal below.
+      {/* How It Works */}
+      <section className="py-16 bg-gray-50">
+        <div className="container mx-auto px-6 text-center">
+          <h2 className="text-3xl font-bold mb-12">How It Works</h2>
+
+          <div className="grid md:grid-cols-4 gap-8 text-center">
+            {[
+              {
+                step: "1",
+                title: "Browse Live Prices",
+                desc: "See current pricing from all partner stores in one place",
+              },
+              {
+                step: "2",
+                title: "Add to Cart & Choose Time Slot",
+                desc: "Select items and pick your preferred delivery slot (10AM, 1PM, or 4PM)",
+              },
+              {
+                step: "3",
+                title: "Pay Securely with Paystack",
+                desc: "Complete payment using Paystack's secure checkout. Fixed ₦400 delivery fee.",
+              },
+              {
+                step: "4",
+                title: "Get Delivered on Time",
+                desc: "Orders are batched with other estate residents and delivered in your chosen window",
+              },
+            ].map((item) => (
+              <div key={item.step} className="bg-white rounded-xl shadow p-6">
+                <div className="w-12 h-12 rounded-full bg-primary text-white flex items-center justify-center text-lg font-bold mx-auto mb-4">
+                  {item.step}
+                </div>
+                <h4 className="font-semibold text-lg mb-2">{item.title}</h4>
+                <p className="text-gray-600">{item.desc}</p>
+              </div>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* Signup Options */}
+      <section className="py-16 text-center bg-gradient-to-br from-primary/10 via-background to-secondary/10">
+        <div className="container mx-auto px-6">
+          <h2 className="text-2xl font-bold mb-6">Join as Staff, Vendor, or Admin</h2>
+          <p className="text-gray-600 mb-8 max-w-lg mx-auto">
+            If you're part of our logistics, store, or management team — choose your role below to get started.
           </p>
 
           <div className="flex flex-wrap justify-center gap-4">
-            <Link to="/auth?mode=signup&role=staff">
-              <Button className="bg-orange-500 hover:bg-orange-600 text-white">
-                👷 Staff Signup
-              </Button>
-            </Link>
-
-            <Link to="/auth?mode=signup&role=vendor">
-              <Button className="bg-green-600 hover:bg-green-700 text-white">
-                🏪 Vendor Signup
-              </Button>
-            </Link>
-
-            <Link to="/auth?mode=login&role=admin">
-              <Button className="bg-red-600 hover:bg-red-700 text-white">
-                🧠 Admin Login
-              </Button>
-            </Link>
+            <Button onClick={handleStaffSignup} className="bg-blue-600 text-white hover:bg-blue-700">
+              Staff Signup
+            </Button>
+            <Button onClick={handleVendorSignup} className="bg-green-600 text-white hover:bg-green-700">
+              Vendor Signup
+            </Button>
+            <Button onClick={handleAdminSignup} className="bg-gray-800 text-white hover:bg-gray-900">
+              Admin Signup
+            </Button>
           </div>
         </div>
       </section>
 
-      {/* FOOTER */}
-      <footer className="bg-gray-900 text-white text-center py-6 mt-auto">
-        <p className="text-sm">
-          © 2025 <strong>RelaxShopping</strong>. Serving estates and hotels across Nigeria.
-          <br />
-          Powered by <strong>GAMEUNPAREIL Enterprise</strong>
-        </p>
+      {/* Footer */}
+      <footer className="bg-gray-900 text-white text-center py-6">
+        <p className="text-sm">© 2025 RelaxShopping. Serving estates and hotels across Nigeria.</p>
+        <p className="text-xs text-gray-400 mt-1">Powered by GAMEUNPAREIL Enterprise</p>
       </footer>
     </div>
   );
-      }
+}
