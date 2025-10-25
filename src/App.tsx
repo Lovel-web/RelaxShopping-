@@ -19,6 +19,7 @@ import Signup from "@/pages/Signup";
 import StaffDashboard from "@/pages/StaffDashboard";
 import Checkout from "@/pages/Checkout";
 import OrderSuccess from "@/pages/OrderSuccess";
+import VendorDashboard from "@/pages/VendorDashboard";
 
 const queryClient = new QueryClient();
 
@@ -43,6 +44,7 @@ function App() {
                 <Route path="/admin" element={<AdminDashboard />} />
                 <Route path="/admin/payments" element={<AdminPayments />} />
                 <Route path="/staff-dashboard" element={<StaffDashboard />} />
+                <Route path="/vendor-dashboard" element={<VendorDashboard />} />
 
                 {/* Chat & Support */}
                 <Route path="/chat" element={<ChatPanel />} />
