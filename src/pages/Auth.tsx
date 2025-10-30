@@ -115,20 +115,14 @@ export default function Auth() {
     setLoading(true);
 
     const { error } = await signUp(email, password, {
-
-      fullName,
-
-      phone,
-
-      state,
-
-      lga,
-
-      estateOrHotel,
-
-      role,
-
-    });
+  fullName: fullName.trim(),
+  name: fullName.trim(),
+  phone,
+  state,
+  lga,
+  estateOrHotel: estateOrHotel.trim(),
+  role: 'customer' // or role variable if you allow selecting different role in UI
+});
 
     if (error) {
 
