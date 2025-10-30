@@ -1,151 +1,95 @@
-// ✅ src/pages/AdminDashboard.tsx
-
 import { useEffect, useState } from "react";
-
-import { useAuth } from "@/contexts/AuthContext";
-
-import { useNavigate } from "react-router-dom";
-
-import { Button } from "@/components/ui/button";
-
-import { Card } from "@/components/ui/card";
-
-import { toast } from "sonner";
+import { db, auth } from "@/lib/firebase";
+import { collection, addDoc, deleteDoc, doc, query, where, onSnapshot } from "firebase/firestore";
+import { onAuthStateChanged } from "firebase/auth";
 
 export default function AdminDashboard() {
-
-  const { user, logout } = useAuth();
-
-  const navigate = useNavigate();
-
-  const [stats, setStats] = useState({
-
-    // Add to AdminDashboard.tsx (Admin-only area)
-import { collection, addDoc } from "firebase/firestore";
-import { db } from "@/lib/firebase";
-
-async function createStateAdmin(email:string, state:string) {
-  // Find user by email (simple approach: use Firestore users collection)
-  const usersRef = collection(db, "users");
-  const q = query(usersRef, where("email", "==", email));
-  const snap = await getDocs(q);
-  if (snap.empty) {
-    alert("User not found. The person must sign up first.");
-    return;
-  }
-  const userDoc = snap.docs[0];
-  await updateDoc(doc(db, "users", userDoc.id), { role: "admin", state });
-  alert(`User promoted to admin for ${state}.`);
-}
-  
-    vendors: 0,
-
-    customers: 0,
-
-    staff: 0,
-
-    orders: 0,
-
-  });
+  const [state, setState] = useState("");
+  const [lgaName, setLgaName] = useState("");
+  const [estateName, setEstateName] = useState("");
+  const [lgas, setLgas] = useState([]);
+  const [estates, setEstates] = useState([]);
+  const [selectedLGA, setSelectedLGA] = useState("");
 
   useEffect(() => {
+    const unsub = onAuthStateChanged(auth, async (user) => {
+      if (user) {
+        const userDoc = await (await import("firebase/firestore")).getDoc(doc(db, "users", user.uid));
+        const data = userDoc.data();
+        if (data?.role === "admin" && data.approved) setState(data.state);
+        else alert("Not authorized or not approved yet.");
+      }
+    });
+    return () => unsub();
+  }, []);
 
-    if (!user) {
+  useEffect(() => {
+    if (!state) return;
+    const q = query(collection(db, "lgas"), where("state", "==", state));
+    const unsub = onSnapshot(q, (snap) => setLgas(snap.docs.map((d) => ({ id: d.id, ...d.data() }))));
+    return () => unsub();
+  }, [state]);
 
-      navigate("/login");
+  useEffect(() => {
+    if (!selectedLGA) return;
+    const q = query(collection(db, "estates"), where("lgaId", "==", selectedLGA));
+    const unsub = onSnapshot(q, (snap) => setEstates(snap.docs.map((d) => ({ id: d.id, ...d.data() }))));
+    return () => unsub();
+  }, [selectedLGA]);
 
-    } else if (user.role !== "admin") {
+  async function addLGA() {
+    if (!lgaName) return alert("Enter LGA name");
+    await addDoc(collection(db, "lgas"), { name: lgaName, state });
+    setLgaName("");
+  }
 
-      toast.error("Unauthorized access");
+  async function addEstate() {
+    if (!selectedLGA || !estateName) return alert("Select LGA and enter Estate name");
+    await addDoc(collection(db, "estates"), { name: estateName, lgaId: selectedLGA, state });
+    setEstateName("");
+  }
 
-      navigate("/");
+  async function deleteLGA(id) {
+    await deleteDoc(doc(db, "lgas", id));
+  }
 
-    } else {
-
-      // Placeholder: replace with real backend data later
-
-      setStats({ vendors: 8, customers: 120, staff: 4, orders: 67 });
-
-    }
-
-  }, [user, navigate]);
-
-  const handleLogout = async () => {
-
-    await logout();
-
-    navigate("/");
-
-  };
+  async function deleteEstate(id) {
+    await deleteDoc(doc(db, "estates", id));
+  }
 
   return (
+    <div className="p-6 max-w-2xl mx-auto">
+      <h1 className="text-2xl font-bold text-center mb-4">{state} Admin Dashboard</h1>
 
-    <div className="min-h-screen bg-gray-50 p-6">
-
-      <div className="max-w-6xl mx-auto space-y-6">
-
-        <div className="flex justify-between items-center">
-
-          <h1 className="text-2xl font-bold text-primary">Admin Dashboard</h1>
-
-          <Button variant="outline" onClick={handleLogout}>Logout</Button>
-
-        </div>
-
-        <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-
-          <Card className="p-4 text-center shadow-sm">
-
-            <h2 className="text-lg font-semibold">Vendors</h2>
-
-            <p className="text-2xl font-bold text-primary">{stats.vendors}</p>
-
-          </Card>
-
-          <Card className="p-4 text-center shadow-sm">
-
-            <h2 className="text-lg font-semibold">Customers</h2>
-
-            <p className="text-2xl font-bold text-primary">{stats.customers}</p>
-
-          </Card>
-
-          <Card className="p-4 text-center shadow-sm">
-
-            <h2 className="text-lg font-semibold">Staff</h2>
-
-            <p className="text-2xl font-bold text-primary">{stats.staff}</p>
-
-          </Card>
-
-          <Card className="p-4 text-center shadow-sm">
-
-            <h2 className="text-lg font-semibold">Orders</h2>
-
-            <p className="text-2xl font-bold text-primary">{stats.orders}</p>
-
-          </Card>
-
-        </div>
-
-        <Card className="p-6 mt-4">
-
-          <h2 className="text-xl font-semibold mb-2">Manage Vendors</h2>
-
-          <p className="text-muted-foreground mb-4">
-
-            Add or verify vendors to appear on RelaxShopping.
-
-          </p>
-
-          <Button onClick={() => navigate("/vendor-dashboard")}>Go to Vendor Dashboard</Button>
-
-        </Card>
-
+      <div className="border p-4 rounded mb-6">
+        <h2>Add LGA</h2>
+        <input value={lgaName} onChange={(e) => setLgaName(e.target.value)} placeholder="LGA Name" className="border p-2 w-full" />
+        <button onClick={addLGA} className="bg-blue-600 text-white px-4 py-2 mt-2 rounded">Add</button>
       </div>
 
+      <h3>LGAs</h3>
+      {lgas.map((l) => (
+        <div key={l.id} className="p-2 border flex justify-between">
+          <span onClick={() => setSelectedLGA(l.id)}>{l.name}</span>
+          <button onClick={() => deleteLGA(l.id)}>❌</button>
+        </div>
+      ))}
+
+      {selectedLGA && (
+        <div className="border p-4 rounded mt-6">
+          <h2>Add Estate/Hotel</h2>
+          <input value={estateName} onChange={(e) => setEstateName(e.target.value)} placeholder="Estate Name" className="border p-2 w-full" />
+          <button onClick={addEstate} className="bg-green-600 text-white px-4 py-2 mt-2 rounded">Add</button>
+
+          <h3>Estates in selected LGA</h3>
+          {estates.map((e) => (
+            <div key={e.id} className="p-2 border flex justify-between">
+              <span>{e.name}</span>
+              <button onClick={() => deleteEstate(e.id)}>❌</button>
+            </div>
+          ))}
+        </div>
+      )}
     </div>
-
   );
-
-}
+          }
