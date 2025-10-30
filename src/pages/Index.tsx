@@ -23,6 +23,15 @@ export default function Index() {
             to estates and hotels across Nigeria. Save time, get the best prices,
             and never miss a delivery window.
           </p>
+          {/* Top: primary Create Account (customer) */}
+<Link to="/auth?mode=signup" className="btn-primary">Start Shopping (Customer)</Link>
+
+{/* Lower: other signups */}
+<div className="mt-8 grid grid-cols-3 gap-4">
+  <Link to="/auth?mode=signup&role=vendor" className="p-4 border rounded">Sign up as Vendor</Link>
+  <Link to="/auth?mode=signup&role=staff" className="p-4 border rounded">Sign up as Staff</Link>
+  <Link to="/auth?mode=signup&role=admin" className="p-4 border rounded">Request Admin (Ask Owner)</Link>
+</div>
           <Button
             onClick={handleCustomerSignup}
             className="bg-primary text-white px-8 py-4 text-lg rounded-xl hover:bg-primary/90 transition"
