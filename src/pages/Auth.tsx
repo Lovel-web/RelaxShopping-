@@ -23,6 +23,8 @@ import { NIGERIAN_STATES, SAMPLE_LGAS, validateNigerianPhone } from '@/lib/utils
 export default function Auth() {
 
   const [searchParams] = useSearchParams();
+const roleFromQuery = searchParams.get('role') as UserRole | null;
+const [role, setRole] = useState<UserRole>(roleFromQuery || 'customer');
 
   const initialMode = searchParams.get('mode') === 'signup' ? 'signup' : 'login';
 
