@@ -1,130 +1,162 @@
-// ✅ src/contexts/AuthContext.tsx
+// src/contexts/AuthContext.tsx
+import React, { createContext, useContext, useEffect, useState } from "react";
 import {
-  createContext,
-  useContext,
-  useEffect,
-  useState,
-  ReactNode,
-} from "react";
-import {
+  getAuth,
+  onAuthStateChanged,
   createUserWithEmailAndPassword,
   signInWithEmailAndPassword,
-  signOut,
   sendPasswordResetEmail,
-  onAuthStateChanged,
+  signOut,
+  type User as FirebaseUser
 } from "firebase/auth";
-import { auth, db } from "@/lib/firebase";
-import { doc, getDoc, setDoc } from "firebase/firestore";
-import { useNavigate } from "react-router-dom";
+import {
+  getFirestore,
+  doc,
+  getDoc,
+  setDoc,
+  serverTimestamp
+} from "firebase/firestore";
+import { app } from "@/lib/firebase"; // your firebase init that exports `app`
 
-interface AuthContextType {
-  user: any;
+const auth = getAuth(app);
+const db = getFirestore(app);
+
+type UserProfile = {
+  uid: string;
+  name?: string;
+  email?: string;
+  phone?: string;
+  role?: "customer" | "vendor" | "staff" | "admin";
+  state?: string;
+  lga?: string;
+  estateOrHotel?: string;
+  shopName?: string;
+  bankAccount?: string;
+};
+
+type AuthContextValue = {
+  firebaseUser: FirebaseUser | null;
+  profile: UserProfile | null;
   loading: boolean;
-  signUp: (email: string, password: string, data: any) => Promise<{ error?: any }>;
+  signUp: (email: string, password: string, profile: Partial<UserProfile>) => Promise<{ error?: any }>;
   signIn: (email: string, password: string) => Promise<{ error?: any }>;
   logout: () => Promise<void>;
   resetPassword: (email: string) => Promise<{ error?: any }>;
+};
+
+const AuthContext = createContext<AuthContextValue | undefined>(undefined);
+
+export function useAuth() {
+  const ctx = useContext(AuthContext);
+  if (!ctx) throw new Error("useAuth must be used inside AuthProvider");
+  return ctx;
 }
 
-const AuthContext = createContext<AuthContextType | undefined>(undefined);
-
-export function AuthProvider({ children }: { children: ReactNode }) {
-  const [user, setUser] = useState<any>(null);
+export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
+  const [firebaseUser, setFirebaseUser] = useState<FirebaseUser | null>(null);
+  const [profile, setProfile] = useState<UserProfile | null>(null);
   const [loading, setLoading] = useState(true);
-  const navigate = useNavigate();
 
-  // ✅ Watch for user login/logout
+  // Listen auth state
   useEffect(() => {
-    const unsub = onAuthStateChanged(auth, async (firebaseUser) => {
-      if (firebaseUser) {
-        const docRef = doc(db, "users", firebaseUser.uid);
-        const docSnap = await getDoc(docRef);
-        if (docSnap.exists()) {
-          const userData = { uid: firebaseUser.uid, ...docSnap.data() };
-          setUser(userData);
-
-          // ✅ Auto-redirect based on role
-          switch (userData.role) {
-            case "admin":
-              navigate("/admin");
-              break;
-            case "vendor":
-              navigate("/vendor-dashboard");
-              break;
-            case "staff":
-              navigate("/staff-dashboard");
-              break;
-            default:
-              navigate("/shops");
+    const unsub = onAuthStateChanged(auth, async (user) => {
+      setFirebaseUser(user);
+      if (user) {
+        // load profile from Firestore users/{uid}
+        try {
+          const ref = doc(db, "users", user.uid);
+          const snap = await getDoc(ref);
+          if (snap.exists()) {
+            const data = snap.data() as any;
+            setProfile({
+              uid: user.uid,
+              name: data.name || "",
+              email: data.email || user.email || "",
+              phone: data.phone || "",
+              role: data.role || "customer",
+              state: data.state || "",
+              lga: data.lga || "",
+              estateOrHotel: data.estateOrHotel || "",
+              shopName: data.shopName || "",
+              bankAccount: data.bankAccount || ""
+            });
+          } else {
+            // if no profile doc, create a basic one (role=customer by default)
+            await setDoc(ref, {
+              uid: user.uid,
+              email: user.email,
+              role: "customer",
+              createdAt: serverTimestamp()
+            }, { merge: true });
+            setProfile({
+              uid: user.uid,
+              email: user.email || "",
+              role: "customer"
+            });
           }
-        } else {
-          setUser(firebaseUser);
+        } catch (err) {
+          console.error("Failed to load profile", err);
+          setProfile(null);
         }
       } else {
-        setUser(null);
+        setProfile(null);
       }
       setLoading(false);
     });
-
     return () => unsub();
-  }, [navigate]);
+  }, []);
 
-  // ✅ Sign Up
-  async function signUp(email: string, password: string, data: any) {
+  // signUp — stores profile in users/{uid}
+  async function signUp(email: string, password: string, profileData: Partial<UserProfile>) {
     try {
       const cred = await createUserWithEmailAndPassword(auth, email, password);
       const uid = cred.user.uid;
-      await setDoc(doc(db, "users", uid), {
+      const ref = doc(db, "users", uid);
+      await setDoc(ref, {
         uid,
         email,
-        ...data,
-        createdAt: new Date(),
+        name: profileData.name || "",
+        phone: profileData.phone || "",
+        role: profileData.role || "customer",
+        state: profileData.state || "",
+        lga: profileData.lga || "",
+        estateOrHotel: profileData.estateOrHotel || "",
+        shopName: profileData.shopName || "",
+        bankAccount: profileData.bankAccount || "",
+        createdAt: serverTimestamp()
       });
-      return {};
-    } catch (error) {
-      return { error };
+      // profile will be loaded automatically by onAuthStateChanged listener
+      return { error: null };
+    } catch (err) {
+      return { error: err };
     }
   }
 
-  // ✅ Sign In
   async function signIn(email: string, password: string) {
     try {
       await signInWithEmailAndPassword(auth, email, password);
-      return {};
-    } catch (error) {
-      return { error };
+      return { error: null };
+    } catch (err: any) {
+      return { error: err };
     }
   }
 
-  // ✅ Logout
   async function logout() {
     await signOut(auth);
-    navigate("/");
   }
 
-  // ✅ Password Reset
   async function resetPassword(email: string) {
     try {
       await sendPasswordResetEmail(auth, email);
-      return {};
-    } catch (error) {
-      return { error };
+      return { error: null };
+    } catch (err: any) {
+      return { error: err };
     }
   }
 
   return (
-    <AuthContext.Provider
-      value={{ user, loading, signUp, signIn, logout, resetPassword }}
-    >
+    <AuthContext.Provider value={{ firebaseUser, profile, loading, signUp, signIn, logout, resetPassword }}>
       {children}
     </AuthContext.Provider>
   );
-}
-
-export function useAuth() {
-  const context = useContext(AuthContext);
-  if (!context) {
-    throw new Error("useAuth must be used within an AuthProvider");
-  }
-  return context;
-}
+};
