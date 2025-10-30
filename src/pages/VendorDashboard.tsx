@@ -1,3 +1,4 @@
+// src/pages/VendorDashboard.tsx
 import { useState } from "react";
 import { db } from "@/lib/firebase";
 import { collection, addDoc } from "firebase/firestore";
@@ -8,36 +9,66 @@ import { Label } from "@/components/ui/label";
 import { toast } from "sonner";
 
 export default function VendorDashboard() {
-  const { user } = useAuth();
-  const [productName, setProductName] = useState('');
-  const [price, setPrice] = useState('');
-  const [imageUrl, setImageUrl] = useState('');
+  const { profile } = useAuth();
+  const [productName, setProductName] = useState("");
+  const [price, setPrice] = useState("");
+  const [imageUrl, setImageUrl] = useState("");
 
-  const handleAddProduct = async (e) => {
+  const handleAddProduct = async (e: React.FormEvent) => {
     e.preventDefault();
+    if (!profile) return toast.error("Please log in.");
 
     try {
       await addDoc(collection(db, "products"), {
         name: productName,
         price: parseFloat(price),
         image: imageUrl,
-        vendorId: user.uid,
-        lga: user.lga,
+        vendorId: profile.uid,
+        lga: profile.lga,
         createdAt: new Date(),
       });
       toast.success("Product added!");
-      setProductName('');
-      setPrice('');
-      setImageUrl('');
+      setProductName("");
+      setPrice("");
+      setImageUrl("");
     } catch (error) {
       toast.error("Error adding product");
-      console.error(error);
     }
+  };
+
+  const handleCSVUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file || !profile) return;
+
+    const reader = new FileReader();
+    reader.onload = async (event) => {
+      const text = event.target?.result as string;
+      const lines = text.split("\n").slice(1);
+      try {
+        for (const line of lines) {
+          const [name, price, image] = line.split(",");
+          if (!name || !price) continue;
+          await addDoc(collection(db, "products"), {
+            name: name.trim(),
+            price: parseFloat(price),
+            image: image?.trim() || "",
+            vendorId: profile.uid,
+            lga: profile.lga,
+            createdAt: new Date(),
+          });
+        }
+        toast.success("Products uploaded successfully!");
+      } catch (err) {
+        toast.error("Error uploading products.");
+      }
+    };
+    reader.readAsText(file);
   };
 
   return (
     <div className="max-w-md mx-auto p-6">
       <h1 className="text-2xl font-bold mb-4">Vendor Dashboard</h1>
+
       <form onSubmit={handleAddProduct} className="space-y-4">
         <div>
           <Label>Product Name</Label>
@@ -51,50 +82,13 @@ export default function VendorDashboard() {
           <Label>Image URL</Label>
           <Input value={imageUrl} onChange={(e) => setImageUrl(e.target.value)} placeholder="https://..." />
         </div>
-        const handleCSVUpload = async (e) => {
-  const file = e.target.files[0];
-  if (!file) return;
-
-  const reader = new FileReader();
-  reader.onload = async (event) => {
-    const text = event.target.result;
-    const lines = text.split('\n').slice(1); // skip header
-    try {
-      for (const line of lines) {
-        const [name, price, image] = line.split(',');
-        if (!name || !price) continue;
-        await addDoc(collection(db, 'products'), {
-          name: name.trim(),
-          price: parseFloat(price),
-          image: image?.trim() || '',
-          vendorId: user.uid,
-          lga: user.lga,
-          createdAt: new Date(),
-        });
-      }
-      toast.success('Products uploaded successfully!');
-    } catch (err) {
-      toast.error('Error uploading products.');
-      console.error(err);
-    }
-  };
-  reader.readAsText(file);
-};
         <Button type="submit">Add Product</Button>
-
-<div className="mt-6 border-t pt-4">
-  <h2 className="text-lg font-semibold mb-2">Bulk Upload (CSV / POS File)</h2>
-  <input
-    type="file"
-    accept=".csv"
-    onChange={handleCSVUpload}
-    className="block w-full text-sm text-muted-foreground border border-dashed p-2 rounded-md"
-  />
-  <p className="text-xs mt-1 text-muted-foreground">
-    Upload a CSV with columns: name, price, image
-  </p>
-</div>
       </form>
+
+      <div className="mt-6 border-t pt-4">
+        <h2 className="text-lg font-semibold mb-2">Bulk Upload (CSV)</h2>
+        <input type="file" accept=".csv" onChange={handleCSVUpload} className="block w-full text-sm border border-dashed p-2 rounded-md" />
+      </div>
     </div>
   );
 }
