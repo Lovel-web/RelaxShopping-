@@ -17,6 +17,8 @@ import AdminPayments from "@/pages/AdminPayments";
 import ChatPanel from "@/pages/ChatPanel";
 import NotFound from "./pages/NotFound";
 import Signup from "@/pages/Signup";
+import Profile from "./pages/Profile";
+import Cart from "./pages/Cart";
 import StaffDashboard from "@/pages/StaffDashboard";
 import Checkout from "@/pages/Checkout";
 import OrderSuccess from "@/pages/OrderSuccess";
@@ -49,6 +51,8 @@ function App() {
                 <Route path="/admin" element={<AdminDashboard />} />
                 <Route path="/admin/payments" element={<AdminPayments />} />
                 <Route path="/staff-dashboard" element={<StaffDashboard />} />
+                <Route path="/profile" element={<Profile />} />
+                <Route path="/cart" element={<Cart />} />
                 <Route path="/vendor-dashboard" element={<VendorDashboard />} />
                 <Route path="/vendor-products" element={<VendorProducts />} />
 
