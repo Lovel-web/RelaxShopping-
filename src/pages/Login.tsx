@@ -12,26 +12,18 @@ export default function Login() {
     e.preventDefault();
     setLoading(true);
     try {
-      // Step 1: Sign in
       const userCred = await signInWithEmailAndPassword(auth, email, password);
-      const uid = userCred.user.uid;
+      const userRef = doc(db, "users", userCred.user.uid);
+      const snap = await getDoc(userRef);
+      const role = snap.data()?.role || "customer";
 
-      // Step 2: Fetch role from Firestore
-      const userDoc = await getDoc(doc(db, "users", uid));
-      const role = userDoc.data()?.role;
-
-      // Step 3: Redirect user based on their role
-      if (role === "admin") {
-        window.location.href = "/admin-dashboard";
-      } else if (role === "staff") {
-        window.location.href = "/staff-dashboard";
-      } else if (role === "vendor") {
-        window.location.href = "/vendor-dashboard";
-      } else {
-        window.location.href = "/";
-      }
+      if (role === "superadmin") window.location.href = "/super-admin";
+      else if (role === "admin") window.location.href = "/admin";
+      else if (role === "staff") window.location.href = "/staff-dashboard";
+      else if (role === "vendor") window.location.href = "/vendor-dashboard";
+      else window.location.href = "/";
     } catch (err) {
-      alert("Invalid email or password.");
+      alert("Invalid email or password");
       console.error(err);
     } finally {
       setLoading(false);
@@ -50,7 +42,6 @@ export default function Login() {
           className="border p-2 w-full rounded"
           required
         />
-
         <input
           type="password"
           placeholder="Password"
@@ -59,7 +50,6 @@ export default function Login() {
           className="border p-2 w-full rounded"
           required
         />
-
         <button
           type="submit"
           disabled={loading}
