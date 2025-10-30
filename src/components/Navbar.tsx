@@ -1,20 +1,28 @@
-import { Link, useLocation } from 'react-router-dom';
-import { ShoppingCart, Store, User, LogOut, LayoutDashboard } from 'lucide-react';
-import { Button } from './ui/button';
-import { useAuth } from '@/contexts/AuthContext';
-import { useCart } from '@/contexts/CartContext';
-import { Badge } from './ui/badge';
+// ✅ src/components/Navbar.tsx
+import { Link, useLocation } from "react-router-dom";
+import {
+  ShoppingCart,
+  Store,
+  User,
+  LogOut,
+  LayoutDashboard,
+  MessageSquare,
+} from "lucide-react";
+import { Button } from "./ui/button";
+import { useAuth } from "@/contexts/AuthContext";
+import { useCart } from "@/contexts/CartContext";
+import { Badge } from "./ui/badge";
 
 export const Navbar = () => {
   const location = useLocation();
-  const { user, userProfile, signOut } = useAuth();
+  const { profile, logout } = useAuth();
   const { itemCount } = useCart();
 
   const handleSignOut = async () => {
     try {
-      await signOut();
+      await logout();
     } catch (error) {
-      console.error('Sign out failed:', error);
+      console.error("Sign out failed:", error);
     }
   };
 
@@ -22,23 +30,23 @@ export const Navbar = () => {
     <nav className="sticky top-0 z-50 w-full border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
       <div className="container flex h-16 items-center justify-between">
         <Link to="/" className="flex items-center space-x-2">
-  <img 
-  src="/placeholder.png" 
-  alt="RelaxShopping Logo" 
-  className="h-10 w-auto object-contain transition-transform duration-500 hover:scale-105 drop-shadow-[0_0_10px_rgba(0,255,200,0.5)]"
-/>
-  <span className="text-xl font-bold text-gradient-primary">RelaxShopping</span>
-</Link>
+          <img
+            src="/placeholder.png"
+            alt="RelaxShopping Logo"
+            className="h-10 w-auto object-contain transition-transform duration-500 hover:scale-105 drop-shadow-[0_0_10px_rgba(0,255,200,0.5)]"
+          />
+          <span className="text-xl font-bold">RelaxShopping</span>
+        </Link>
 
-        {user?.role === "vendor" && (
-  <a href="/vendor-dashboard" className="px-3 py-2">Vendor Dashboard</a>
-)}
         <div className="flex items-center gap-4">
-          {user ? (
+          {profile ? (
             <>
+              {/* Shops */}
               <Link to="/shops">
-                <Button 
-                  variant={location.pathname === '/shops' ? 'default' : 'ghost'}
+                <Button
+                  variant={
+                    location.pathname === "/shops" ? "default" : "ghost"
+                  }
                   size="sm"
                 >
                   <Store className="h-4 w-4 mr-2" />
@@ -46,25 +54,35 @@ export const Navbar = () => {
                 </Button>
               </Link>
 
-              <Link to="/cart" className="relative">
-                <Button 
-                  variant={location.pathname === '/cart' ? 'default' : 'ghost'}
-                  size="sm"
-                >
-                  <ShoppingCart className="h-4 w-4 mr-2" />
-                  Cart
-                  {itemCount > 0 && (
-                    <Badge className="ml-2 px-1.5 py-0.5 min-w-[20px] h-5 bg-secondary text-secondary-foreground">
-                      {itemCount}
-                    </Badge>
-                  )}
-                </Button>
-              </Link>
+              {/* Cart */}
+              {profile.role === "customer" && (
+                <Link to="/cart" className="relative">
+                  <Button
+                    variant={
+                      location.pathname === "/cart" ? "default" : "ghost"
+                    }
+                    size="sm"
+                  >
+                    <ShoppingCart className="h-4 w-4 mr-2" />
+                    Cart
+                    {itemCount > 0 && (
+                      <Badge className="ml-2 px-1.5 py-0.5 min-w-[20px] h-5 bg-secondary text-secondary-foreground">
+                        {itemCount}
+                      </Badge>
+                    )}
+                  </Button>
+                </Link>
+              )}
 
-              {userProfile?.role === 'admin' && (
+              {/* Admin Dashboard */}
+              {profile.role === "admin" && (
                 <Link to="/admin">
-                  <Button 
-                    variant={location.pathname.startsWith('/admin') ? 'default' : 'ghost'}
+                  <Button
+                    variant={
+                      location.pathname.startsWith("/admin")
+                        ? "default"
+                        : "ghost"
+                    }
                     size="sm"
                   >
                     <LayoutDashboard className="h-4 w-4 mr-2" />
@@ -73,9 +91,59 @@ export const Navbar = () => {
                 </Link>
               )}
 
+              {/* Vendor Dashboard */}
+              {profile.role === "vendor" && (
+                <Link to="/vendor-dashboard">
+                  <Button
+                    variant={
+                      location.pathname === "/vendor-dashboard"
+                        ? "default"
+                        : "ghost"
+                    }
+                    size="sm"
+                  >
+                    <LayoutDashboard className="h-4 w-4 mr-2" />
+                    Vendor
+                  </Button>
+                </Link>
+              )}
+
+              {/* Staff Dashboard */}
+              {profile.role === "staff" && (
+                <Link to="/staff-dashboard">
+                  <Button
+                    variant={
+                      location.pathname === "/staff-dashboard"
+                        ? "default"
+                        : "ghost"
+                    }
+                    size="sm"
+                  >
+                    <LayoutDashboard className="h-4 w-4 mr-2" />
+                    Staff
+                  </Button>
+                </Link>
+              )}
+
+              {/* Chat */}
+              <Link to="/chat">
+                <Button
+                  variant={
+                    location.pathname === "/chat" ? "default" : "ghost"
+                  }
+                  size="sm"
+                >
+                  <MessageSquare className="h-4 w-4 mr-2" />
+                  Chat
+                </Button>
+              </Link>
+
+              {/* Profile */}
               <Link to="/profile">
-                <Button 
-                  variant={location.pathname === '/profile' ? 'default' : 'ghost'}
+                <Button
+                  variant={
+                    location.pathname === "/profile" ? "default" : "ghost"
+                  }
                   size="sm"
                 >
                   <User className="h-4 w-4 mr-2" />
@@ -83,11 +151,8 @@ export const Navbar = () => {
                 </Button>
               </Link>
 
-              <Button 
-                variant="ghost" 
-                size="sm"
-                onClick={handleSignOut}
-              >
+              {/* Logout */}
+              <Button variant="ghost" size="sm" onClick={handleSignOut}>
                 <LogOut className="h-4 w-4 mr-2" />
                 Sign Out
               </Button>
