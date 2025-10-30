@@ -20,6 +20,24 @@ export default function AdminDashboard() {
 
   const [stats, setStats] = useState({
 
+    // Add to AdminDashboard.tsx (Admin-only area)
+import { collection, addDoc } from "firebase/firestore";
+import { db } from "@/lib/firebase";
+
+async function createStateAdmin(email:string, state:string) {
+  // Find user by email (simple approach: use Firestore users collection)
+  const usersRef = collection(db, "users");
+  const q = query(usersRef, where("email", "==", email));
+  const snap = await getDocs(q);
+  if (snap.empty) {
+    alert("User not found. The person must sign up first.");
+    return;
+  }
+  const userDoc = snap.docs[0];
+  await updateDoc(doc(db, "users", userDoc.id), { role: "admin", state });
+  alert(`User promoted to admin for ${state}.`);
+}
+  
     vendors: 0,
 
     customers: 0,
