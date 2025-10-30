@@ -1,5 +1,4 @@
-// ✅ src/App.tsx (with Super Admin control & route protection)
-
+// ✅ src/App.tsx (final stable)
 import AdminDashboard from "@/pages/AdminDashboard";
 import Login from "@/pages/Login";
 import { Toaster } from "@/components/ui/toaster";
@@ -28,15 +27,11 @@ import SuperAdminDashboard from "@/pages/SuperAdminDashboard";
 
 const queryClient = new QueryClient();
 
-// ✅ Protect routes by user role
-function ProtectedRoute({ children, allowedRoles }) {
-  const { userData } = useAuth();
-
-  // if not logged in
-  if (!userData) return <Navigate to="/auth" replace />;
-  // if logged in but not allowed
-  if (!allowedRoles.includes(userData.role)) return <Navigate to="/" replace />;
-
+function ProtectedRoute({ children, allowedRoles }: any) {
+  const { profile, loading } = useAuth();
+  if (loading) return null;
+  if (!profile) return <Navigate to="/auth" replace />;
+  if (!allowedRoles.includes(profile.role)) return <Navigate to="/" replace />;
   return children;
 }
 
@@ -48,25 +43,25 @@ function App() {
           <AuthProvider>
             <CartProvider>
               <Routes>
-                {/* 🌍 Public routes */}
+                {/* 🌍 Public */}
                 <Route path="/" element={<Index />} />
                 <Route path="/signup" element={<Signup />} />
                 <Route path="/login" element={<Login />} />
                 <Route path="/auth" element={<Auth />} />
 
-                {/* 🛒 Shopping flow */}
+                {/* 🛍 Shopping */}
                 <Route path="/shops" element={<Shops />} />
                 <Route path="/checkout" element={<Checkout />} />
                 <Route path="/order-success" element={<OrderSuccess />} />
 
-                {/* 👤 User profile/cart */}
+                {/* 👤 Profile */}
                 <Route path="/profile" element={<Profile />} />
                 <Route path="/cart" element={<Cart />} />
 
                 {/* 💬 Chat */}
                 <Route path="/chat" element={<ChatPanel />} />
 
-                {/* 🧑‍💼 Dashboards (Protected) */}
+                {/* 🧑‍💼 Dashboards */}
                 <Route
                   path="/admin"
                   element={
@@ -99,8 +94,6 @@ function App() {
                     </ProtectedRoute>
                   }
                 />
-
-                {/* 💰 Admin-only subpage */}
                 <Route
                   path="/admin/payments"
                   element={
@@ -109,8 +102,6 @@ function App() {
                     </ProtectedRoute>
                   }
                 />
-
-                {/* 👑 Hidden Super Admin route */}
                 <Route
                   path="/super-admin"
                   element={
@@ -119,12 +110,8 @@ function App() {
                     </ProtectedRoute>
                   }
                 />
-
-                {/* 404 fallback */}
                 <Route path="*" element={<NotFound />} />
               </Routes>
-
-              {/* Toast Notifications */}
               <Toaster />
               <Sonner />
             </CartProvider>
@@ -134,5 +121,4 @@ function App() {
     </QueryClientProvider>
   );
 }
-
 export default App;
